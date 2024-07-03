@@ -1,16 +1,16 @@
-import { Button } from "@nextui-org/react";
+import { Routes, Route } from "react-router-dom";
 import { FC } from "react";
+import Home from "./views/Home";
+import SignUp from "./views/SignUp";
 
 interface Props {}
 
 const App: FC<Props> = () => {
   return (
-    <div>
-      <h1 className="text-5xl font-bold text-red-600">
-        Hello React Developers
-      </h1>
-      <Button>Next UI</Button>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/sign-up" element={<SignUp />} />
+    </Routes>
   );
 };
 
