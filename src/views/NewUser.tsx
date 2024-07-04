@@ -1,5 +1,6 @@
 import { Avatar, Button, Input } from "@nextui-org/react";
 import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import client from "../api/client";
 
 interface Props {}
 
@@ -23,10 +24,24 @@ const NewUser: FC<Props> = () => {
     }
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault();
 
-    console.log(userInfo);
+    const formData = new FormData();
+
+    formData.append("name", userInfo.name);
+    if (userInfo.avatar?.type.startsWith("image")) {
+      formData.append("avatar", userInfo.avatar);
+    }
+
+    try {
+      const { data } = await client.put("/auth/profile", formData, {
+        withCredentials: true,
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
