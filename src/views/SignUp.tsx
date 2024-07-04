@@ -2,6 +2,7 @@ import { Button, Input } from "@nextui-org/react";
 import { FC, FormEventHandler, useState } from "react";
 import Book from "../svg/Book";
 import client from "../api/client";
+import { RiMailCheckLine } from "react-icons/ri";
 
 interface Props {}
 
@@ -11,7 +12,9 @@ const emailRegex = new RegExp(
 
 const SignUp: FC<Props> = () => {
   const [email, setEmail] = useState("");
+  const [busy, setBusy] = useState(false);
   const [invalidForm, setInvalidForm] = useState(false);
+  const [showSuccessResponse, setShowSuccessResponse] = useState(false);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault();
@@ -20,16 +23,29 @@ const SignUp: FC<Props> = () => {
 
     setInvalidForm(false);
 
+    setBusy(true);
     try {
-      const { data } = await client.post("/auth/generate-link", {
+      await client.post("/auth/generate-link", {
         email,
       });
 
-      console.log(data.message);
+      setShowSuccessResponse(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setBusy(false);
     }
   };
+
+  if (showSuccessResponse)
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <RiMailCheckLine size={80} className="animate-bounce" />
+        <p className="text-lg font-semibold">
+          Please check your email we just sent you a magic link.
+        </p>
+      </div>
+    );
 
   return (
     <div className="flex-1 flex items-center justify-center">
@@ -52,7 +68,7 @@ const SignUp: FC<Props> = () => {
               setEmail(target.value);
             }}
           />
-          <Button type="submit" className="w-full">
+          <Button isLoading={busy} type="submit" className="w-full">
             Send Me The Link
           </Button>
         </form>
