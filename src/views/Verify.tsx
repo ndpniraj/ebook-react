@@ -1,3 +1,4 @@
+import { Spinner } from "@nextui-org/react";
 import { FC } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 
@@ -17,7 +18,12 @@ const Verify: FC<Props> = () => {
       return <Navigate to="/not-found" />;
     }
   }
-  return <div>Verify</div>;
+
+  return (
+    <div className="flex items-center justify-center p-10">
+      <Spinner label="Verifying..." color="warning" />
+    </div>
+  );
 };
 
 export default Verify;
