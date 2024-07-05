@@ -10,12 +10,10 @@ import { FaBookReader } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import ProfileOptions from "../profile/ProfileOptions";
-import useAuth from "../../hooks/useAuth";
 
 interface Props {}
 
 const Navbar: FC<Props> = () => {
-  const { profile, status } = useAuth();
   return (
     <NextUINav>
       <NavbarBrand>
@@ -34,7 +32,7 @@ const Navbar: FC<Props> = () => {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <ProfileOptions profile={profile} busy={status === "busy"} />
+          <ProfileOptions />
         </NavbarItem>
       </NavbarContent>
     </NextUINav>

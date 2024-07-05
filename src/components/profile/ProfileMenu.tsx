@@ -12,6 +12,7 @@ import { Profile } from "../../store/auth";
 
 interface Props {
   profile: Profile;
+  signOut(): void;
 }
 
 interface LinkProps {
@@ -27,10 +28,8 @@ const DropdownLink: FC<LinkProps> = ({ title, to }) => {
   );
 };
 
-const ProfileMenu: FC<Props> = ({ profile }) => {
+const ProfileMenu: FC<Props> = ({ profile, signOut }) => {
   const { email, role, avatar, name } = profile;
-
-  const signOut = () => {};
 
   return (
     <div className="flex items-center gap-4">
