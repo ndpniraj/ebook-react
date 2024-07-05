@@ -15,7 +15,7 @@ import useAuth from "../../hooks/useAuth";
 interface Props {}
 
 const Navbar: FC<Props> = () => {
-  const { profile } = useAuth();
+  const { profile, status } = useAuth();
   return (
     <NextUINav>
       <NavbarBrand>
@@ -34,7 +34,7 @@ const Navbar: FC<Props> = () => {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <ProfileOptions profile={profile} />
+          <ProfileOptions profile={profile} busy={status === "busy"} />
         </NavbarItem>
       </NavbarContent>
     </NextUINav>
