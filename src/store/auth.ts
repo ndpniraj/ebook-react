@@ -28,10 +28,13 @@ const slice = createSlice({
     updateProfile(state, { payload }: PayloadAction<Profile | null>) {
       state.profile = payload;
     },
+    updateAuthStatus(state, { payload }: PayloadAction<AuthState["status"]>) {
+      state.status = payload;
+    },
   },
 });
 
-export const { updateProfile } = slice.actions;
+export const { updateProfile, updateAuthStatus } = slice.actions;
 
 export const getAuthState = createSelector(
   (state: RootState) => state,
