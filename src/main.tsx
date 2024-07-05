@@ -6,14 +6,17 @@ import { NextUIProvider } from "@nextui-org/react";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
+import AuthProvider from "./context/AuthProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
-        <NextUIProvider>
-          <App />
-        </NextUIProvider>
+        <AuthProvider>
+          <NextUIProvider>
+            <App />
+          </NextUIProvider>
+        </AuthProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>
