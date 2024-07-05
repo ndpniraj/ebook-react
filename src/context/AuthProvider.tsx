@@ -1,23 +1,24 @@
 import { createContext, FC, ReactNode, useEffect } from "react";
-import { AuthState, updateProfile } from "../store/auth";
+import { AuthState, getAuthState, updateProfile } from "../store/auth";
 import client from "../api/client";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Props {
   children: ReactNode;
 }
 
-interface IAuthContext {
+export interface IAuthContext {
   profile: AuthState["profile"];
   status: AuthState["status"];
 }
 
-const AuthContext = createContext<IAuthContext>({
+export const AuthContext = createContext<IAuthContext>({
   profile: null,
-  status: "authenticated",
+  status: "unauthenticated",
 });
 
 const AuthProvider: FC<Props> = ({ children }) => {
+  const { profile, status } = useSelector(getAuthState);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +27,11 @@ const AuthProvider: FC<Props> = ({ children }) => {
     });
   }, []);
 
-  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ profile, status }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;
