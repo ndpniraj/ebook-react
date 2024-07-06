@@ -5,7 +5,7 @@ import {
   DatePicker,
   Input,
 } from "@nextui-org/react";
-import { FC } from "react";
+import { ChangeEventHandler, FC, useState } from "react";
 import { genres, languages } from "../utils/data";
 import PosterSelector from "./PosterSelector";
 import RichEditor from "./rich-editor";
@@ -16,7 +16,40 @@ interface Props {
   initialState?: unknown;
 }
 
+interface DefaultForm {
+  file?: File;
+  cover?: File;
+  title: string;
+  description: string;
+  publicationName: string;
+  publishedAt?: string;
+  genre: string;
+  language: string;
+  mrp: string;
+  sale: string;
+}
+
+const defaultBookInfo = {
+  title: "",
+  description: "",
+  language: "",
+  genre: "",
+  mrp: "",
+  publicationName: "",
+  sale: "",
+};
+
 const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
+  const [bookInfo, setBookInfo] = useState<DefaultForm>(defaultBookInfo);
+
+  const handleTextChange: ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    const { value, name } = target;
+    console.log(name, value);
+    setBookInfo({ ...bookInfo, [name]: value });
+  };
+
   return (
     <form className="p-10 space-y-6">
       <h1 className="pb-6 font-semibold text-2xl w-full">{title}</h1>
@@ -43,13 +76,15 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         isRequired
         label="Book Title"
         placeholder="Think & Grow Rich"
+        value={bookInfo.title}
+        onChange={handleTextChange}
       />
 
       <RichEditor
         placeholder="About Book..."
-        isInvalid
-        errorMessage="Something is wrong"
-        value="<p>Hello <strong>bold</strong></p>"
+        // isInvalid
+        // errorMessage="Something is wrong"
+        value={bookInfo.description}
         editable
       />
 
@@ -59,6 +94,8 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         label="Publication Name"
         isRequired
         placeholder="Penguin Book"
+        value={bookInfo.publicationName}
+        onChange={handleTextChange}
       />
 
       <DatePicker label="Publish Date" showMonthAndYearPickers isRequired />
@@ -67,6 +104,7 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         label="Language"
         placeholder="Select a Language"
         items={languages}
+        selectedKey={bookInfo.language}
       >
         {(item) => {
           return (
@@ -75,7 +113,12 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         }}
       </Autocomplete>
 
-      <Autocomplete label="Genre" placeholder="Select a Genre" items={genres}>
+      <Autocomplete
+        selectedKey={bookInfo.genre}
+        label="Genre"
+        placeholder="Select a Genre"
+        items={genres}
+      >
         {(item) => {
           return (
             <AutocompleteItem key={item.name}>{item.name}</AutocompleteItem>
@@ -93,6 +136,8 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
             label="MRP"
             isRequired
             placeholder="0.00"
+            value={bookInfo.mrp}
+            onChange={handleTextChange}
             startContent={
               <div className="pointer-events-none flex items-center">
                 <span className="text-default-400 text-small">$</span>
@@ -105,6 +150,8 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
             label="Sale Price"
             isRequired
             placeholder="0.00"
+            value={bookInfo.sale}
+            onChange={handleTextChange}
             startContent={
               <div className="pointer-events-none flex items-center">
                 <span className="text-default-400 text-small">$</span>
