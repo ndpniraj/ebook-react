@@ -110,6 +110,7 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         // errorMessage="Something is wrong"
         value={bookInfo.description}
         editable
+        onChange={(description) => setBookInfo({ ...bookInfo, description })}
       />
 
       <Input
@@ -135,27 +136,36 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
       <Autocomplete
         label="Language"
         placeholder="Select a Language"
-        items={languages}
-        selectedKey={bookInfo.language}
-      >
-        {(item) => {
-          return (
-            <AutocompleteItem key={item.name}>{item.name}</AutocompleteItem>
-          );
+        defaultSelectedKey={bookInfo.language}
+        onSelectionChange={(key = "") => {
+          setBookInfo({ ...bookInfo, language: key as string });
         }}
+      >
+        {languages.map((item) => {
+          return (
+            <AutocompleteItem value={item.name} key={item.name}>
+              {item.name}
+            </AutocompleteItem>
+          );
+        })}
       </Autocomplete>
 
       <Autocomplete
         selectedKey={bookInfo.genre}
         label="Genre"
         placeholder="Select a Genre"
-        items={genres}
-      >
-        {(item) => {
-          return (
-            <AutocompleteItem key={item.name}>{item.name}</AutocompleteItem>
-          );
+        defaultSelectedKey={bookInfo.language}
+        onSelectionChange={(key = "") => {
+          setBookInfo({ ...bookInfo, language: key as string });
         }}
+      >
+        {genres.map((item) => {
+          return (
+            <AutocompleteItem value={item.name} key={item.name}>
+              {item.name}
+            </AutocompleteItem>
+          );
+        })}
       </Autocomplete>
 
       <div className="bg-default-100 rounded-md py-2 px-3">

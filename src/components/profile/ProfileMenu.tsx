@@ -29,7 +29,7 @@ const DropdownLink: FC<LinkProps> = ({ title, to }) => {
 };
 
 const ProfileMenu: FC<Props> = ({ profile, signOut }) => {
-  const { email, role, avatar, name } = profile;
+  const { email, role, name } = profile;
 
   return (
     <div className="flex items-center gap-4">
