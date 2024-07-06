@@ -5,7 +5,7 @@ import {
   DatePicker,
   Input,
 } from "@nextui-org/react";
-import { ChangeEventHandler, FC, useState } from "react";
+import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
 import { genres, languages } from "../utils/data";
 import PosterSelector from "./PosterSelector";
 import RichEditor from "./rich-editor";
@@ -40,9 +40,29 @@ const defaultBookInfo = {
   sale: "",
 };
 
+interface BookToSubmit {
+  title: string;
+  description: string;
+  uploadMethod: "aws" | "local";
+  language: string;
+  publishedAt?: string;
+  publicationName: string;
+  genre: string;
+  price: {
+    mrp: number;
+    sale: number;
+  };
+  fileInfo: {
+    type: string;
+    name: string;
+    size: number;
+  };
+}
+
 const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
   const [bookInfo, setBookInfo] = useState<DefaultForm>(defaultBookInfo);
   const [cover, setCover] = useState("");
+  const [isForUpdate, setIsForUpdate] = useState(false);
 
   const handleTextChange: ChangeEventHandler<HTMLInputElement> = ({
     target,
@@ -70,8 +90,57 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
     setBookInfo({ ...bookInfo, [name]: file });
   };
 
+  const handleBookPublish = () => {
+    const formData = new FormData();
+
+    const { file, cover } = bookInfo;
+
+    // Validate book file (must be epub type)
+    if (file?.type !== "application/epub+zip") {
+      return console.log("Please select a valid (.epub) file.");
+    }
+
+    // Validate cover file
+    if (cover && !cover.type.startsWith("image/")) {
+      return console.log("Please select a poster.");
+    }
+
+    if (cover) {
+      formData.append("cover", cover);
+    }
+
+    // validate data for book creation
+    const bookToSend: BookToSubmit = {
+      title: bookInfo.title,
+      description: bookInfo.description,
+      genre: bookInfo.genre,
+      language: bookInfo.language,
+      publicationName: bookInfo.publicationName,
+      uploadMethod: "aws",
+      publishedAt: bookInfo.publishedAt,
+      price: {
+        mrp: Number(bookInfo.mrp),
+        sale: Number(bookInfo.sale),
+      },
+      fileInfo: {
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      },
+    };
+  };
+
+  const handleBookUpdate = () => {};
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
+    evt.preventDefault();
+
+    if (isForUpdate) handleBookUpdate();
+    else handleBookPublish();
+  };
+
   return (
-    <form className="p-10 space-y-6">
+    <form onSubmit={handleSubmit} className="p-10 space-y-6">
       <h1 className="pb-6 font-semibold text-2xl w-full">{title}</h1>
 
       <label htmlFor="file">
@@ -203,7 +272,9 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         </div>
       </div>
 
-      <Button className="w-full">{submitBtnTitle}</Button>
+      <Button type="submit" className="w-full">
+        {submitBtnTitle}
+      </Button>
     </form>
   );
 };
