@@ -8,6 +8,7 @@ import {
 import { FC } from "react";
 import { genres, languages } from "../utils/data";
 import PosterSelector from "./PosterSelector";
+import RichEditor from "./rich-editor";
 
 interface Props {
   title: string;
@@ -44,7 +45,13 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         placeholder="Think & Grow Rich"
       />
 
-      {/* About For Book */}
+      <RichEditor
+        placeholder="About Book..."
+        isInvalid
+        errorMessage="Something is wrong"
+        value="<p>Hello <strong>bold</strong></p>"
+        editable
+      />
 
       <Input
         name="publicationName"

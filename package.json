@@ -12,6 +12,10 @@
   "dependencies": {
     "@nextui-org/react": "^2.4.2",
     "@reduxjs/toolkit": "^2.2.6",
+    "@tiptap/extension-placeholder": "^2.4.0",
+    "@tiptap/pm": "^2.4.0",
+    "@tiptap/react": "^2.4.0",
+    "@tiptap/starter-kit": "^2.4.0",
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.12",
