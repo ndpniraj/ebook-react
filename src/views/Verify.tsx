@@ -1,8 +1,8 @@
-import { Spinner } from "@nextui-org/react";
 import { FC } from "react";
 import { useDispatch } from "react-redux";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { updateProfile } from "../store/auth";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 interface Props {}
 
@@ -24,11 +24,7 @@ const Verify: FC<Props> = () => {
     }
   }
 
-  return (
-    <div className="flex items-center justify-center p-10">
-      <Spinner label="Verifying..." color="warning" />
-    </div>
-  );
+  return <LoadingSpinner />;
 };
 
 export default Verify;

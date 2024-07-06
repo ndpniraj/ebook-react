@@ -8,6 +8,8 @@ import NewUser from "./views/NewUser";
 import { Toaster } from "react-hot-toast";
 import Profile from "./views/Profile";
 import UpdateProfile from "./views/UpdateProfile";
+import Guest from "./routes/Guest";
+import Private from "./routes/Private";
 
 interface Props {}
 
@@ -16,11 +18,17 @@ const App: FC<Props> = () => {
     <Container>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/verify" element={<Verify />} />
-        <Route path="/new-user" element={<NewUser />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/update-profile" element={<UpdateProfile />} />
+
+        <Route element={<Private />}>
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/update-profile" element={<UpdateProfile />} />
+          <Route path="/new-user" element={<NewUser />} />
+        </Route>
+
+        <Route element={<Guest />}>
+          <Route path="/sign-up" element={<SignUp />} />
+        </Route>
       </Routes>
 
       <Toaster />
