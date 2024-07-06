@@ -5,6 +5,7 @@ import SignUp from "./views/SignUp";
 import Container from "./components/common/Container";
 import Verify from "./views/Verify";
 import NewUser from "./views/NewUser";
+import { Toaster } from "react-hot-toast";
 
 interface Props {}
 
@@ -17,6 +18,8 @@ const App: FC<Props> = () => {
         <Route path="/verify" element={<Verify />} />
         <Route path="/new-user" element={<NewUser />} />
       </Routes>
+
+      <Toaster />
     </Container>
   );
 };
