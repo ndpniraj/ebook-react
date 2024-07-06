@@ -7,6 +7,7 @@ import {
 } from "@nextui-org/react";
 import { FC } from "react";
 import { genres, languages } from "../utils/data";
+import PosterSelector from "./PosterSelector";
 
 interface Props {
   title: string;
@@ -29,7 +30,11 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         />
       </label>
 
-      {/* Poster Selector */}
+      <PosterSelector
+        isInvalid
+        fileName="This is the very long long file name.png"
+        errorMessage="This is the very long long file name.png"
+      />
 
       <Input
         type="text"
