@@ -37,10 +37,10 @@ const ProfileMenu: FC<Props> = ({ profile, signOut }) => {
         <DropdownTrigger>
           <User
             as="button"
-            avatarProps={{
-              isBordered: true,
-              src: avatar,
-            }}
+            // avatarProps={{
+            //   isBordered: true,
+            //   src: avatar,
+            // }}
             className="transition-transform"
             name={name}
           />
