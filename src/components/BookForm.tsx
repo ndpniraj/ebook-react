@@ -41,6 +41,7 @@ const defaultBookInfo = {
 
 const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
   const [bookInfo, setBookInfo] = useState<DefaultForm>(defaultBookInfo);
+  const [cover, setCover] = useState("");
 
   const handleTextChange: ChangeEventHandler<HTMLInputElement> = ({
     target,
@@ -48,6 +49,24 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
     const { value, name } = target;
     console.log(name, value);
     setBookInfo({ ...bookInfo, [name]: value });
+  };
+
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = ({
+    target,
+  }) => {
+    const { files, name } = target;
+
+    if (!files) return;
+
+    const file = files[0];
+
+    if (name === "cover" && file?.size) {
+      setCover(URL.createObjectURL(file));
+    } else {
+      setCover("");
+    }
+
+    setBookInfo({ ...bookInfo, [name]: file });
   };
 
   return (
@@ -61,13 +80,17 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
           type="file"
           name="file"
           id="file"
+          onChange={handleFileChange}
         />
       </label>
 
       <PosterSelector
-        isInvalid
-        fileName="This is the very long long file name.png"
-        errorMessage="This is the very long long file name.png"
+        src={cover}
+        name="cover"
+        // isInvalid
+        fileName={bookInfo.cover?.name}
+        // errorMessage="This is the very long long file name.png"
+        onChange={handleFileChange}
       />
 
       <Input
