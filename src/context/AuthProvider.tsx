@@ -51,7 +51,7 @@ const AuthProvider: FC<Props> = ({ children }) => {
         dispatch(updateProfile(null));
         dispatch(updateAuthStatus("unauthenticated"));
       });
-  }, []);
+  }, [dispatch]);
 
   return (
     <AuthContext.Provider value={{ profile, status, signOut }}>
