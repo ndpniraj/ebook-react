@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@internationalized/date": "^3.5.4",
     "@nextui-org/react": "^2.4.2",
     "@reduxjs/toolkit": "^2.2.6",
     "@tiptap/extension-placeholder": "^2.4.0",
