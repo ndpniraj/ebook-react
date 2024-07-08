@@ -19,7 +19,7 @@ interface Props {
   title: string;
   submitBtnTitle: string;
   initialState?: unknown;
-  onSubmit(formData: FormData): Promise<void>;
+  onSubmit(formData: FormData, file: File): Promise<void>;
 }
 
 interface DefaultForm {
@@ -222,7 +222,7 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle, onSubmit }) => {
         }
       }
 
-      await onSubmit(formData);
+      await onSubmit(formData, file);
     } catch (error) {
       parseError(error);
     } finally {
