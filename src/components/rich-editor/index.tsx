@@ -32,24 +32,32 @@ const extensions = [
   }),
 ];
 
+let loaded = false;
 const RichEditor: FC<Props> = ({
   editable,
   value,
   placeholder,
   isInvalid,
   errorMessage,
+  onChange,
 }) => {
   const editor = useEditor({
     extensions: [...extensions, Placeholder.configure({ placeholder })],
+    onUpdate({ editor }) {
+      onChange && onChange(editor.getHTML());
+    },
   });
 
   useEffect(() => {
+    if (loaded) return;
+
     if (editor && !editable) {
       editor.setEditable(false);
     }
 
     if (editor && value) {
       editor.commands.setContent(value);
+      loaded = true;
     }
   }, [editor, value, editable]);
 
