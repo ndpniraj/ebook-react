@@ -11,6 +11,8 @@ import PosterSelector from "./PosterSelector";
 import RichEditor from "./rich-editor";
 import { parseDate } from "@internationalized/date";
 import { z } from "zod";
+import ErrorList from "./common/ErrorList";
+import clsx from "clsx";
 
 interface Props {
   title: string;
@@ -106,6 +108,9 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
   const [bookInfo, setBookInfo] = useState<DefaultForm>(defaultBookInfo);
   const [cover, setCover] = useState("");
   const [isForUpdate, setIsForUpdate] = useState(false);
+  const [errors, setErrors] = useState<{
+    [key: string]: string[] | undefined;
+  }>();
 
   const handleTextChange: ChangeEventHandler<HTMLInputElement> = ({
     target,
@@ -174,7 +179,7 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
 
     const result = newBookSchema.safeParse(bookToSend);
     if (!result.success) {
-      return console.log(result.error.flatten().fieldErrors);
+      return setErrors(result.error.flatten().fieldErrors);
     }
 
     console.log(result.data);
@@ -221,12 +226,14 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         placeholder="Think & Grow Rich"
         value={bookInfo.title}
         onChange={handleTextChange}
+        isInvalid={errors?.title ? true : false}
+        errorMessage={<ErrorList errors={errors?.title} />}
       />
 
       <RichEditor
         placeholder="About Book..."
-        // isInvalid
-        // errorMessage="Something is wrong"
+        isInvalid={errors?.description ? true : false}
+        errorMessage={<ErrorList errors={errors?.description} />}
         value={bookInfo.description}
         editable
         onChange={(description) => setBookInfo({ ...bookInfo, description })}
@@ -240,6 +247,8 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         placeholder="Penguin Book"
         value={bookInfo.publicationName}
         onChange={handleTextChange}
+        isInvalid={errors?.publicationName ? true : false}
+        errorMessage={<ErrorList errors={errors?.publicationName} />}
       />
 
       <DatePicker
@@ -250,6 +259,8 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         label="Publish Date"
         showMonthAndYearPickers
         isRequired
+        isInvalid={errors?.publishedAt ? true : false}
+        errorMessage={<ErrorList errors={errors?.publishedAt} />}
       />
 
       <Autocomplete
@@ -259,6 +270,9 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         onSelectionChange={(key = "") => {
           setBookInfo({ ...bookInfo, language: key as string });
         }}
+        isInvalid={errors?.language ? true : false}
+        errorMessage={<ErrorList errors={errors?.language} />}
+        isRequired
       >
         {languages.map((item) => {
           return (
@@ -276,6 +290,9 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         onSelectionChange={(key = "") => {
           setBookInfo({ ...bookInfo, genre: key as string });
         }}
+        isInvalid={errors?.genre ? true : false}
+        errorMessage={<ErrorList errors={errors?.genre} />}
+        isRequired
       >
         {genres.map((item) => {
           return (
@@ -286,38 +303,47 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         })}
       </Autocomplete>
 
-      <div className="bg-default-100 rounded-md py-2 px-3">
-        <p className="text-xs pl-3">Price*</p>
+      <div>
+        <div className="bg-default-100 rounded-md py-2 px-3">
+          <p className={clsx("text-xs pl-3", errors?.price && "text-red-400")}>
+            Price*
+          </p>
 
-        <div className="flex space-x-6 mt-2">
-          <Input
-            name="mrp"
-            type="number"
-            label="MRP"
-            isRequired
-            placeholder="0.00"
-            value={bookInfo.mrp}
-            onChange={handleTextChange}
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">$</span>
-              </div>
-            }
-          />
-          <Input
-            name="sale"
-            type="number"
-            label="Sale Price"
-            isRequired
-            placeholder="0.00"
-            value={bookInfo.sale}
-            onChange={handleTextChange}
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">$</span>
-              </div>
-            }
-          />
+          <div className="flex space-x-6 mt-2">
+            <Input
+              name="mrp"
+              type="number"
+              label="MRP"
+              isRequired
+              placeholder="0.00"
+              value={bookInfo.mrp}
+              onChange={handleTextChange}
+              startContent={
+                <div className="pointer-events-none flex items-center">
+                  <span className="text-default-400 text-small">$</span>
+                </div>
+              }
+              isInvalid={errors?.price ? true : false}
+            />
+            <Input
+              name="sale"
+              type="number"
+              label="Sale Price"
+              isRequired
+              placeholder="0.00"
+              value={bookInfo.sale}
+              onChange={handleTextChange}
+              startContent={
+                <div className="pointer-events-none flex items-center">
+                  <span className="text-default-400 text-small">$</span>
+                </div>
+              }
+              isInvalid={errors?.price ? true : false}
+            />
+          </div>
+        </div>
+        <div className="p-2">
+          <ErrorList errors={errors?.price} />
         </div>
       </div>
 

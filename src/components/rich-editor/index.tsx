@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -10,7 +10,7 @@ interface Props {
   onChange?(html: string): void;
   editable?: boolean;
   isInvalid?: boolean;
-  errorMessage?: string;
+  errorMessage?: ReactNode;
   placeholder?: string;
 }
 
@@ -68,9 +68,7 @@ const RichEditor: FC<Props> = ({
       <Tools editor={editor} visible={editable} />
       <EditorContent editor={editor} />
 
-      {errorMessage ? (
-        <p className="text-xs text-red-400">{errorMessage}</p>
-      ) : null}
+      {errorMessage}
     </div>
   );
 };
