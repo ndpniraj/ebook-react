@@ -1,11 +1,11 @@
-import { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes, ReactNode } from "react";
 import clsx from "clsx";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   src?: string;
   isInvalid?: boolean;
   fileName?: string;
-  errorMessage?: string;
+  errorMessage?: ReactNode;
 }
 
 const PosterSelector: FC<Props> = ({
@@ -39,9 +39,7 @@ const PosterSelector: FC<Props> = ({
           )}
         </div>
         {fileName ? <p className="w-28 text-sm truncate">{fileName}</p> : null}
-        {errorMessage ? (
-          <p className="text-sm text-red-400">{errorMessage}</p>
-        ) : null}
+        {errorMessage}
       </label>
     </div>
   );

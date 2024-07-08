@@ -145,12 +145,28 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
 
     // Validate book file (must be epub type)
     if (file?.type !== "application/epub+zip") {
-      return console.log("Please select a valid (.epub) file.");
+      return setErrors({
+        ...errors,
+        file: ["Please select a valid (.epub) file."],
+      });
+    } else {
+      setErrors({
+        ...errors,
+        file: undefined,
+      });
     }
 
     // Validate cover file
     if (cover && !cover.type.startsWith("image/")) {
-      return console.log("Please select a poster.");
+      return setErrors({
+        ...errors,
+        cover: ["Please select a valid poster file."],
+      });
+    } else {
+      setErrors({
+        ...errors,
+        cover: undefined,
+      });
     }
 
     if (cover) {
@@ -198,23 +214,27 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
     <form onSubmit={handleSubmit} className="p-10 space-y-6">
       <h1 className="pb-6 font-semibold text-2xl w-full">{title}</h1>
 
-      <label htmlFor="file">
-        <span>Select File: </span>
-        <input
-          accept="application/epub+zip"
-          type="file"
-          name="file"
-          id="file"
-          onChange={handleFileChange}
-        />
-      </label>
+      <div>
+        <label className={clsx(errors?.file && "text-red-400")} htmlFor="file">
+          <span>Select File: </span>
+          <input
+            accept="application/epub+zip"
+            type="file"
+            name="file"
+            id="file"
+            onChange={handleFileChange}
+          />
+        </label>
+
+        <ErrorList errors={errors?.file} />
+      </div>
 
       <PosterSelector
         src={cover}
         name="cover"
-        // isInvalid
         fileName={bookInfo.cover?.name}
-        // errorMessage="This is the very long long file name.png"
+        isInvalid={errors?.cover ? true : false}
+        errorMessage={<ErrorList errors={errors?.cover} />}
         onChange={handleFileChange}
       />
 
