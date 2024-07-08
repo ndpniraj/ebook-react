@@ -6,10 +6,11 @@ import {
   Input,
 } from "@nextui-org/react";
 import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
-import { genres, languages } from "../utils/data";
+import { genreList, genres, languageList, languages } from "../utils/data";
 import PosterSelector from "./PosterSelector";
 import RichEditor from "./rich-editor";
 import { parseDate } from "@internationalized/date";
+import { z } from "zod";
 
 interface Props {
   title: string;
@@ -59,6 +60,48 @@ interface BookToSubmit {
   };
 }
 
+const commonBookSchema = {
+  title: z.string().trim().min(5, "Title is too short!"),
+  description: z.string().trim().min(5, "Description is too short!"),
+  genre: z.enum(genreList, { message: "Please select a genre!" }),
+  language: z.enum(languageList, { message: "Please select a language!" }),
+  publicationName: z
+    .string({ required_error: "Invalid publication name!" })
+    .trim()
+    .min(3, "Description is too short!"),
+  uploadMethod: z.enum(["aws", "local"], {
+    message: "Upload method is missing!",
+  }),
+  publishedAt: z.string({ required_error: "Publish date is missing!" }).trim(),
+  price: z
+    .object({
+      mrp: z
+        .number({ required_error: "MRP is missing!" })
+        .refine((val) => val > 0, "MRP is missing!"),
+      sale: z
+        .number({ required_error: "Sale price is missing!" })
+        .refine((val) => val > 0, "Sale price is missing!"),
+    })
+    .refine((price) => price.sale <= price.mrp, "Invalid sale price!"),
+};
+
+const fileInfoSchema = z.object({
+  name: z
+    .string({ required_error: "File name is missing!" })
+    .min(1, "File name is missing!"),
+  type: z
+    .string({ required_error: "File type is missing!" })
+    .min(1, "File type is missing!"),
+  size: z
+    .number({ required_error: "File size is missing!" })
+    .refine((val) => val > 0, "Invalid file size!"),
+});
+
+const newBookSchema = z.object({
+  ...commonBookSchema,
+  fileInfo: fileInfoSchema,
+});
+
 const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
   const [bookInfo, setBookInfo] = useState<DefaultForm>(defaultBookInfo);
   const [cover, setCover] = useState("");
@@ -68,7 +111,7 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
     target,
   }) => {
     const { value, name } = target;
-    console.log(name, value);
+
     setBookInfo({ ...bookInfo, [name]: value });
   };
 
@@ -128,6 +171,13 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
         type: file.type,
       },
     };
+
+    const result = newBookSchema.safeParse(bookToSend);
+    if (!result.success) {
+      return console.log(result.error.flatten().fieldErrors);
+    }
+
+    console.log(result.data);
   };
 
   const handleBookUpdate = () => {};
@@ -220,12 +270,11 @@ const BookForm: FC<Props> = ({ title, submitBtnTitle }) => {
       </Autocomplete>
 
       <Autocomplete
-        selectedKey={bookInfo.genre}
         label="Genre"
         placeholder="Select a Genre"
-        defaultSelectedKey={bookInfo.language}
+        defaultSelectedKey={bookInfo.genre}
         onSelectionChange={(key = "") => {
-          setBookInfo({ ...bookInfo, language: key as string });
+          setBookInfo({ ...bookInfo, genre: key as string });
         }}
       >
         {genres.map((item) => {
