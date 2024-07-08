@@ -15,10 +15,12 @@ import ErrorList from "./common/ErrorList";
 import clsx from "clsx";
 import { parseError } from "../utils/helper";
 
+export interface InitialBookToUpdate {}
+
 interface Props {
   title: string;
   submitBtnTitle: string;
-  initialState?: unknown;
+  initialState?: InitialBookToUpdate;
   onSubmit(formData: FormData, file: File): Promise<void>;
 }
 
