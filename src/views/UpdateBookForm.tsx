@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import client from "../api/client";
 import { parseError } from "../utils/helper";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 interface Props {}
 
@@ -12,7 +14,19 @@ const UpdateBookForm: FC<Props> = () => {
   const [busy, setBusy] = useState(true);
   const { slug } = useParams();
 
-  console.log(bookInfo);
+  const handleSubmit = async (data: FormData, file?: File | null) => {
+    const res = await client.patch("/book", data);
+    if (res.data && file) {
+      axios.put(res.data, file, {
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+      });
+    }
+    toast("The book updated successfully.", {
+      duration: 5000,
+    });
+  };
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -31,7 +45,14 @@ const UpdateBookForm: FC<Props> = () => {
 
   if (busy) return <LoadingSpinner />;
 
-  return <BookForm title="Update Book" submitBtnTitle="Update Book" />;
+  return (
+    <BookForm
+      onSubmit={handleSubmit}
+      initialState={bookInfo}
+      title="Update Book"
+      submitBtnTitle="Update Book"
+    />
+  );
 };
 
 export default UpdateBookForm;
