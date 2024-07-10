@@ -5,9 +5,17 @@ import { Button, Input } from "@nextui-org/react";
 import { MdClose, MdOutlineAdd } from "react-icons/md";
 import { z } from "zod";
 import ErrorList from "./ErrorList";
+import { parseError } from "../../utils/helper";
+
+export interface AuthorInfo {
+  name: string;
+  about: string;
+  socialLinks?: string[];
+}
 
 interface Props {
   btnTitle?: string;
+  onSubmit(data: AuthorInfo): Promise<void>;
 }
 
 const newAuthorSchema = z.object({
@@ -30,7 +38,7 @@ const newAuthorSchema = z.object({
     .optional(),
 });
 
-const AuthorForm: FC<Props> = ({ btnTitle }) => {
+const AuthorForm: FC<Props> = ({ btnTitle, onSubmit }) => {
   const [socialLinks, setSocialLinks] = useState([""]);
   const [about, setAbout] = useState("");
   const [errors, setErrors] = useState<{
@@ -55,25 +63,29 @@ const AuthorForm: FC<Props> = ({ btnTitle }) => {
     setSocialLinks(oldList);
   };
 
-  const handleSubmit = () => {
-    const links: string[] = [];
+  const handleSubmit = async () => {
+    try {
+      const links: string[] = [];
 
-    socialLinks.forEach((link) => {
-      if (link.trim()) links.push(link);
-    });
+      socialLinks.forEach((link) => {
+        if (link.trim()) links.push(link);
+      });
 
-    const data = {
-      name: profile?.name,
-      about,
-      socialLinks: links,
-    };
+      const data = {
+        name: profile?.name,
+        about,
+        socialLinks: links,
+      };
 
-    const result = newAuthorSchema.safeParse(data);
-    if (!result.success) {
-      return setErrors(result.error.flatten().fieldErrors);
+      const result = newAuthorSchema.safeParse(data);
+      if (!result.success) {
+        return setErrors(result.error.flatten().fieldErrors);
+      }
+
+      await onSubmit(result.data);
+    } catch (error) {
+      parseError(error);
     }
-
-    console.log(result.data);
   };
 
   return (

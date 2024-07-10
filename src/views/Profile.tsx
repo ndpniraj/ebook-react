@@ -12,7 +12,7 @@ const Profile: FC<Props> = () => {
 
   if (!profile) return <Navigate to="/sign-up" />;
 
-  const { role } = profile;
+  const { role, avatar } = profile;
 
   const isAuthor = role === "author";
 
@@ -20,7 +20,7 @@ const Profile: FC<Props> = () => {
     <div className="flex-1 flex flex-col items-center">
       <div className="flex min-w-96">
         <Avatar
-          src="https://ebook-public-data.s3.amazonaws.com/668680734542251a9f29e4a6-john-doe.png"
+          src={avatar}
           className="w-20 h-20"
           radius="sm"
           name={profile?.name}
