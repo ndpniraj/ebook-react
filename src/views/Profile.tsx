@@ -42,7 +42,11 @@ const Profile: FC<Props> = () => {
               <Link className="text-xs underline" to="/author-registration">
                 Became an Author
               </Link>
-            ) : null}
+            ) : (
+              <Link className="text-xs underline" to="/update-author">
+                Update Author Bio
+              </Link>
+            )}
           </div>
         </div>
 

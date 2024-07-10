@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import RichEditor from "../rich-editor";
 import { Button, Input } from "@nextui-org/react";
@@ -13,9 +13,14 @@ export interface AuthorInfo {
   socialLinks?: string[];
 }
 
+export interface InitialState extends AuthorInfo {
+  id: string;
+}
+
 interface Props {
   btnTitle?: string;
   onSubmit(data: AuthorInfo): Promise<void>;
+  initialState?: InitialState;
 }
 
 const newAuthorSchema = z.object({
@@ -38,7 +43,7 @@ const newAuthorSchema = z.object({
     .optional(),
 });
 
-const AuthorForm: FC<Props> = ({ btnTitle, onSubmit }) => {
+const AuthorForm: FC<Props> = ({ initialState, btnTitle, onSubmit }) => {
   const [socialLinks, setSocialLinks] = useState([""]);
   const [about, setAbout] = useState("");
   const [errors, setErrors] = useState<{
@@ -88,6 +93,19 @@ const AuthorForm: FC<Props> = ({ btnTitle, onSubmit }) => {
     }
   };
 
+  useEffect(() => {
+    if (initialState) {
+      setAbout(initialState.about);
+      let links = [""];
+
+      if (initialState.socialLinks?.length) {
+        links = initialState.socialLinks;
+      }
+
+      setSocialLinks(links);
+    }
+  }, [initialState]);
+
   return (
     <div className="p-4 space-y-6">
       <p>
@@ -96,6 +114,7 @@ const AuthorForm: FC<Props> = ({ btnTitle, onSubmit }) => {
 
       <RichEditor
         onChange={setAbout}
+        value={about}
         editable
         placeholder="Say who you are to your readers..."
         isInvalid={errors?.about ? true : false}
@@ -109,13 +128,13 @@ const AuthorForm: FC<Props> = ({ btnTitle, onSubmit }) => {
 
         {socialLinks.map((_, index) => {
           return (
-            <div className="flex items-center space-x-4">
+            <div key={index} className="flex items-center space-x-4">
               <Input
                 onChange={({ target }) =>
                   updateSocialLinks(index, target.value)
                 }
+                value={socialLinks[index]}
                 placeholder="https://x.com/@something"
-                key={index}
               />
               {socialLinks.length > 1 && (
                 <Button
