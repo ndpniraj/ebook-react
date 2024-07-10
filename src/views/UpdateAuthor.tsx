@@ -7,6 +7,7 @@ import client from "../api/client";
 import useAuth from "../hooks/useAuth";
 import { parseError } from "../utils/helper";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import toast from "react-hot-toast";
 
 interface Props {}
 
@@ -17,7 +18,9 @@ const UpdateAuthor: FC<Props> = () => {
 
   const handleSubmit = async (data: AuthorInfo) => {
     const res = await client.patch("/author", data);
-    console.log(res.data);
+    if (res.data) {
+      toast.success(res.data.message);
+    }
   };
 
   useEffect(() => {
