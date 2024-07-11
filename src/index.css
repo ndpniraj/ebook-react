@@ -41,6 +41,15 @@
   background: inherit !important;
 }
 
+.slick-next::before,
+.slick-prev::before {
+  color: #000 !important;
+}
+.dark .slick-next::before,
+.dark .slick-prev::before {
+  color: #faf7f2 !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

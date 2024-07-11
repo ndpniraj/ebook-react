@@ -1,13 +1,14 @@
 import { FC } from "react";
-import useAuth from "../hooks/useAuth";
+import HeroSection from "../components/HeroSection";
 
 interface Props {}
 
 const Home: FC<Props> = () => {
-  const authStatus = useAuth();
-  console.log(authStatus);
-
-  return <div>Home</div>;
+  return (
+    <div>
+      <HeroSection />
+    </div>
+  );
 };
 
 export default Home;
