@@ -1,6 +1,8 @@
 import { FC, useEffect, useState } from "react";
 import client from "../api/client";
 import { parseError } from "../utils/helper";
+import { Divider } from "@nextui-org/react";
+import DividerWithTitle from "./common/DividerWithTitle";
 
 interface Props {
   genre: string;
@@ -38,9 +40,11 @@ const BookByGenre: FC<Props> = ({ genre }) => {
     fetchBooks(genre);
   }, [genre]);
 
-  console.log(books);
-
-  return <div></div>;
+  return (
+    <div>
+      <DividerWithTitle title={genre} />
+    </div>
+  );
 };
 
 export default BookByGenre;
