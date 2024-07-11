@@ -239,7 +239,7 @@ const BookForm: FC<Props> = ({
         formData.append("book", file);
       }
 
-      for (let key in bookToSend) {
+      for (const key in bookToSend) {
         type keyType = keyof typeof bookToSend;
         const value = bookToSend[key as keyType];
 
@@ -339,7 +339,7 @@ const BookForm: FC<Props> = ({
         formData.append("book", file);
       }
 
-      for (let key in bookToSend) {
+      for (const key in bookToSend) {
         type keyType = keyof typeof bookToSend;
         const value = bookToSend[key as keyType];
 

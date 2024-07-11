@@ -36,7 +36,7 @@ const UpdateAuthor: FC<Props> = () => {
     };
 
     fetchAuthorInfo();
-  }, []);
+  }, [profile?.authorId]);
 
   if (busy) return <LoadingSpinner />;
 
