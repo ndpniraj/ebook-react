@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import client from "../api/client";
-import { parseError } from "../utils/helper";
+import { calculateDiscount, formatPrice, parseError } from "../utils/helper";
 import { Chip } from "@nextui-org/react";
 import DividerWithTitle from "./common/DividerWithTitle";
 import { Link } from "react-router-dom";
@@ -61,14 +61,18 @@ const BookByGenre: FC<Props> = ({ genre }) => {
                   <p className="font-bold line-clamp-2">{book.title}</p>
 
                   <Chip color="danger" radius="sm" size="sm">
-                    20% Off
+                    {calculateDiscount(book.price)}% Off
                   </Chip>
                 </div>
 
                 <div className="w-full">
                   <div className="flex space-x-2">
-                    <p className="font-bold">{book.price.sale}</p>
-                    <p className="line-through">{book.price.mrp}</p>
+                    <p className="font-bold">
+                      {formatPrice(Number(book.price.sale))}
+                    </p>
+                    <p className="line-through">
+                      {formatPrice(Number(book.price.mrp))}
+                    </p>
                   </div>
                 </div>
 
