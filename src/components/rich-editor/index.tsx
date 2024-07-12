@@ -6,6 +6,7 @@ import clsx from "clsx";
 import Tools from "./Tools";
 
 interface Props {
+  className?: string;
   value?: string;
   onChange?(html: string): void;
   editable?: boolean;
@@ -39,6 +40,7 @@ const RichEditor: FC<Props> = ({
   placeholder,
   isInvalid,
   errorMessage,
+  className,
   onChange,
 }) => {
   const editor = useEditor({
@@ -66,7 +68,7 @@ const RichEditor: FC<Props> = ({
       className={clsx(isInvalid && "ring-2 ring-red-400 p-2 rounded-medium")}
     >
       <Tools editor={editor} visible={editable} />
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className={className} />
 
       {errorMessage}
     </div>
