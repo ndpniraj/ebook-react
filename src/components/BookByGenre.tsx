@@ -1,10 +1,11 @@
 import { FC, useEffect, useState } from "react";
 import client from "../api/client";
 import { calculateDiscount, formatPrice, parseError } from "../utils/helper";
-import { Chip, Skeleton } from "@nextui-org/react";
+import { Chip } from "@nextui-org/react";
 import DividerWithTitle from "./common/DividerWithTitle";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa6";
+import Skeletons from "./skeletons";
 
 interface Props {
   genre: string;
@@ -26,7 +27,6 @@ interface Book {
 const BookByGenre: FC<Props> = ({ genre }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [busy, setBusy] = useState(true);
-  const fakeData = new Array(5).fill(""); // ["", "", ...]
 
   useEffect(() => {
     const fetchBooks = async (genre: string) => {
@@ -43,28 +43,7 @@ const BookByGenre: FC<Props> = ({ genre }) => {
     fetchBooks(genre);
   }, [genre]);
 
-  if (busy)
-    return (
-      <div className="mt-6 grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 gap-5 animate-pulse">
-        {fakeData.map((_, index) => {
-          return (
-            <div
-              className="flex flex-col items-center space-y-2 bg-gradient-to-r from-transparent"
-              key={index}
-            >
-              <div>
-                <Skeleton className="w-28 h-36 rounded bg-default-100" />
-              </div>
-              <div className="w-full flex flex-col gap-2">
-                <Skeleton className="h-3 w-3/5 rounded bg-default-200" />
-                <Skeleton className="h-4 w-10 rounded bg-default-200" />
-                <Skeleton className="h-4 w-10 rounded bg-default-200" />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
+  if (busy) return <Skeletons.BookList />;
 
   return (
     <div>

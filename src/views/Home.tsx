@@ -9,6 +9,8 @@ const Home: FC<Props> = () => {
     <div className="space-y-10 px-5 lg:p-0">
       <HeroSection />
       <BookByGenre genre="Fiction" />
+      <BookByGenre genre="Young Adult" />
+      <BookByGenre genre="Science Fiction" />
     </div>
   );
 };
