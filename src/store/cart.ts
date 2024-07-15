@@ -73,6 +73,14 @@ export const getCartState = createSelector(
         total += cartItem.quantity;
         return total;
       }, 0),
+      subTotal: cart.items.reduce((total, cartItem) => {
+        total += Number(cartItem.product.price.mrp) * cartItem.quantity;
+        return total;
+      }, 0),
+      totalPrice: cart.items.reduce((total, cartItem) => {
+        total += Number(cartItem.product.price.sale) * cartItem.quantity;
+        return total;
+      }, 0),
       ...cart,
     };
   }

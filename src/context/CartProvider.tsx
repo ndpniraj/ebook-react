@@ -28,15 +28,23 @@ export interface ICartContext {
   id?: string;
   items: cartItem[];
   pending: boolean;
+  fetching: boolean;
   totalCount: number;
+  totalPrice: number;
+  subTotal: number;
   updateCart(item: cartItem): void;
+  clearCart(): void;
 }
 
 export const CartContext = createContext<ICartContext>({
   items: [],
   pending: false,
+  fetching: true,
   totalCount: 0,
+  totalPrice: 0,
+  subTotal: 0,
   updateCart() {},
+  clearCart() {},
 });
 
 const CartProvider: FC<Props> = ({ children }) => {
@@ -44,6 +52,27 @@ const CartProvider: FC<Props> = ({ children }) => {
   const dispatch = useDispatch();
   const { profile } = useAuth();
   const [pending, setPending] = useState(false);
+  const [fetching, setFetching] = useState(true);
+
+  const clearCart = () => {
+    // update the UI
+    dispatch(updateCartState({ items: [], id: "" }));
+
+    if (profile) {
+      // update the server/database
+      // if user is authenticated sending api request
+      setPending(true);
+      client
+        .post("/cart/clear")
+        .then(() => {
+          toast.success("Cart cleared successfully.");
+        })
+        .catch(parseError)
+        .finally(() => {
+          setPending(false);
+        });
+    }
+  };
 
   const updateCart = (item: cartItem) => {
     // update the UI
@@ -70,8 +99,14 @@ const CartProvider: FC<Props> = ({ children }) => {
 
   useEffect(() => {
     const fetchCartInfo = async () => {
-      const { data } = await client.get<CartApiResponse>("/cart");
-      dispatch(updateCartState({ id: data.cart.id, items: data.cart.items }));
+      try {
+        const { data } = await client.get<CartApiResponse>("/cart");
+        dispatch(updateCartState({ id: data.cart.id, items: data.cart.items }));
+      } catch (error) {
+        parseError(error);
+      } finally {
+        setFetching(false);
+      }
     };
 
     fetchCartInfo();
@@ -82,8 +117,12 @@ const CartProvider: FC<Props> = ({ children }) => {
       value={{
         items: cart.items,
         totalCount: cart.totalCount,
+        subTotal: cart.subTotal,
+        totalPrice: cart.totalPrice,
         pending,
+        fetching,
         updateCart,
+        clearCart,
       }}
     >
       {children}
