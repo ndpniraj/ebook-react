@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { Book } from "../components/BookDetail";
+import { RootState } from ".";
 
 export type cartItem = {
   product: Book;
@@ -47,6 +48,19 @@ const slice = createSlice({
     },
   },
 });
+
+export const getCartState = createSelector(
+  (state: RootState) => state,
+  ({ cart }) => {
+    return {
+      totalCount: cart.items.reduce((total, cartItem) => {
+        total += cartItem.quantity;
+        return total;
+      }, 0),
+      ...cart,
+    };
+  }
+);
 
 export const { updateCartId, updateCartItems, updateCartState } = slice.actions;
 
