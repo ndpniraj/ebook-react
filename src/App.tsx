@@ -29,10 +29,10 @@ const App: FC<Props> = () => {
         <Route path="/book/:slug" element={<SingleBook />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/not-found" element={<NotFound />} />
+        <Route path="/cart" element={<Cart />} />
 
         <Route element={<Private />}>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/cart" element={<Cart />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/new-user" element={<NewUser />} />
           <Route

@@ -47,6 +47,13 @@ export const CartContext = createContext<ICartContext>({
   clearCart() {},
 });
 
+const CART_KEY = "cartItems";
+const updateCartInLS = (cartItems: cartItem[]) => {
+  localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+};
+
+let startLSUpdate = false;
+
 const CartProvider: FC<Props> = ({ children }) => {
   const cart = useSelector(getCartState);
   const dispatch = useDispatch();
@@ -75,6 +82,7 @@ const CartProvider: FC<Props> = ({ children }) => {
   };
 
   const updateCart = (item: cartItem) => {
+    startLSUpdate = true;
     // update the UI
     dispatch(updateCartItems(item));
 
@@ -98,7 +106,22 @@ const CartProvider: FC<Props> = ({ children }) => {
   };
 
   useEffect(() => {
+    if (startLSUpdate && !profile) {
+      updateCartInLS(cart.items);
+    }
+  }, [cart.items, profile]);
+
+  useEffect(() => {
     const fetchCartInfo = async () => {
+      if (!profile) {
+        const result = localStorage.getItem(CART_KEY);
+        if (result) {
+          dispatch(updateCartState({ items: JSON.parse(result) }));
+        }
+
+        return setFetching(false);
+      }
+
       try {
         const { data } = await client.get<CartApiResponse>("/cart");
         dispatch(updateCartState({ id: data.cart.id, items: data.cart.items }));
