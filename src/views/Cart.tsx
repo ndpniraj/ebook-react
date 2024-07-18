@@ -1,15 +1,18 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import useCart from "../hooks/useCart";
 import Skeletons from "../components/skeletons";
 import { Button, Chip, Divider } from "@nextui-org/react";
-import { calculateDiscount, formatPrice } from "../utils/helper";
+import { calculateDiscount, formatPrice, parseError } from "../utils/helper";
 import { FaMinus, FaPlus, FaRegTrashCan } from "react-icons/fa6";
 import { MdOutlineShoppingCartCheckout } from "react-icons/md";
+import client from "../api/client";
 
 interface Props {}
 
 const Cart: FC<Props> = () => {
+  const [busy, setBusy] = useState(false);
   const {
+    id,
     pending,
     items,
     totalCount,
@@ -19,6 +22,20 @@ const Cart: FC<Props> = () => {
     updateCart,
     clearCart,
   } = useCart();
+
+  const handleCheckout = async () => {
+    try {
+      setBusy(true);
+      const { data } = await client.post("/checkout", { cartId: id });
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    } catch (error) {
+      parseError(error);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   if (fetching) return <Skeletons.Cart />;
 
@@ -83,7 +100,7 @@ const Cart: FC<Props> = () => {
                     isIconOnly
                     variant="solid"
                     size="sm"
-                    isLoading={pending}
+                    isLoading={pending || busy}
                     onClick={() => updateCart({ product, quantity: -1 })}
                   >
                     <FaMinus />
@@ -95,7 +112,7 @@ const Cart: FC<Props> = () => {
                     isIconOnly
                     variant="solid"
                     size="sm"
-                    isLoading={pending}
+                    isLoading={pending || busy}
                     onClick={() => updateCart({ product, quantity: 1 })}
                   >
                     <FaPlus />
@@ -104,7 +121,7 @@ const Cart: FC<Props> = () => {
                     isIconOnly
                     variant="solid"
                     size="sm"
-                    isLoading={pending}
+                    isLoading={pending || busy}
                     onClick={() => updateCart({ product, quantity: -quantity })}
                   >
                     <FaRegTrashCan />
@@ -131,8 +148,9 @@ const Cart: FC<Props> = () => {
             color="danger"
             radius="sm"
             size="lg"
-            isLoading={pending}
+            isLoading={pending || busy}
             startContent={<MdOutlineShoppingCartCheckout size={18} />}
+            onClick={handleCheckout}
           >
             Checkout
           </Button>
