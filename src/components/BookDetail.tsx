@@ -13,6 +13,7 @@ import RichEditor from "./rich-editor";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import useCart from "../hooks/useCart";
 import client from "../api/client";
+import useAuth from "../hooks/useAuth";
 
 export interface Book {
   id: string;
@@ -47,10 +48,11 @@ interface Props {
 const BookDetail: FC<Props> = ({ book }) => {
   const [busy, setBusy] = useState(false);
   const { updateCart, pending } = useCart();
+  const { profile } = useAuth();
 
   if (!book) return null;
 
-  const alreadyPurchased = false;
+  const alreadyPurchased = profile?.books?.includes(book.id) || false;
 
   const handleCartUpdate = () => {
     updateCart({ product: book, quantity: 1 });
