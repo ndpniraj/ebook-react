@@ -19,6 +19,7 @@ import NotFound from "./views/NotFound";
 import SingleBook from "./views/SingleBook";
 import Cart from "./views/Cart";
 import PaymentSuccess from "./views/PaymentSuccess";
+import Orders from "./views/Orders";
 
 interface Props {}
 
@@ -34,6 +35,7 @@ const App: FC<Props> = () => {
 
         <Route element={<Private />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/orders" element={<Orders />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/new-user" element={<NewUser />} />
