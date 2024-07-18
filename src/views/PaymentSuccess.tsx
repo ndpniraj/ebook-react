@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import client from "../api/client";
 import { formatPrice, parseError } from "../utils/helper";
 import { Divider } from "@nextui-org/react";
+import Skeletons from "../components/skeletons";
 
 interface Props {}
 
@@ -43,6 +44,8 @@ const PaymentSuccess: FC<Props> = () => {
 
     fetchOrderDetail();
   }, [sessionId]);
+
+  if (busy) return <Skeletons.Payment />;
 
   return (
     <div className="lg:p-0 p-5">
