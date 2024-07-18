@@ -1,6 +1,7 @@
 import BookDetails from "./BookDetails";
 import BookList from "./BookList";
 import Cart from "./Cart";
+import Orders from "./Orders";
 import Payment from "./Payment";
 
 const Skeletons = {
@@ -8,6 +9,7 @@ const Skeletons = {
   BookDetails,
   Cart,
   Payment,
+  Orders,
 };
 
 export default Skeletons;
