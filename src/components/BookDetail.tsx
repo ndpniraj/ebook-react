@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link } from "react-router-dom";
-import { calculateDiscount, formatPrice } from "../utils/helper";
+import { calculateDiscount, formatPrice, parseError } from "../utils/helper";
 import { Button, Chip, Divider } from "@nextui-org/react";
 import {
   FaEarthAfrica,
@@ -12,6 +12,7 @@ import {
 import RichEditor from "./rich-editor";
 import { TbShoppingCartPlus } from "react-icons/tb";
 import useCart from "../hooks/useCart";
+import client from "../api/client";
 
 export interface Book {
   id: string;
@@ -44,6 +45,7 @@ interface Props {
 }
 
 const BookDetail: FC<Props> = ({ book }) => {
+  const [busy, setBusy] = useState(false);
   const { updateCart, pending } = useCart();
 
   if (!book) return null;
@@ -52,6 +54,22 @@ const BookDetail: FC<Props> = ({ book }) => {
 
   const handleCartUpdate = () => {
     updateCart({ product: book, quantity: 1 });
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      setBusy(true);
+      const { data } = await client.post("/checkout/instant", {
+        productId: id,
+      });
+      if (data.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
+      }
+    } catch (error) {
+      parseError(error);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const {
@@ -169,12 +187,16 @@ const BookDetail: FC<Props> = ({ book }) => {
               <Button
                 onClick={handleCartUpdate}
                 variant="light"
-                isLoading={pending}
+                isLoading={pending || busy}
                 startContent={<TbShoppingCartPlus />}
               >
                 Add to Cart
               </Button>
-              <Button isLoading={pending} variant="flat">
+              <Button
+                onClick={handleBuyNow}
+                isLoading={pending || busy}
+                variant="flat"
+              >
                 Buy Now
               </Button>
             </>
