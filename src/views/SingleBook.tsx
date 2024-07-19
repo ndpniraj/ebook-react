@@ -51,7 +51,11 @@ const SingleBook: FC<Props> = () => {
       <RecommendedSection id={bookDetails?.id} />
 
       {/* Review Section */}
-      <ReviewSection reviews={[]} title={`${bookDetails?.title} Reviews`} />
+      <ReviewSection
+        id={bookDetails?.id}
+        reviews={reviews}
+        title={`${bookDetails?.title} Reviews`}
+      />
     </div>
   );
 };

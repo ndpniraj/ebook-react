@@ -3,6 +3,7 @@ import DividerWithTitle from "./common/DividerWithTitle";
 import { User } from "@nextui-org/react";
 import { FaStar } from "react-icons/fa6";
 import RichEditor from "./rich-editor";
+import { Link } from "react-router-dom";
 
 export interface Review {
   content: string;
@@ -20,10 +21,27 @@ export interface Review {
 
 interface Props {
   title?: string;
+  id?: string;
   reviews: Review[];
 }
 
-const ReviewSection: FC<Props> = ({ title, reviews }) => {
+const ReviewSection: FC<Props> = ({ id, title, reviews }) => {
+  if (!reviews.length)
+    return (
+      <div className="pb-20">
+        <DividerWithTitle title={title} />
+
+        <div className="mt-6">
+          <p className="text-xl">
+            Be the first to{" "}
+            <Link to={`/rate/${id}`} className="underline font-semibold">
+              add a review
+            </Link>
+          </p>
+        </div>
+      </div>
+    );
+
   return (
     <div className="pb-20">
       <DividerWithTitle title={title} />
