@@ -4,8 +4,14 @@ import client from "../api/client";
 import { parseError } from "../utils/helper";
 import BookDetail, { Book } from "../components/BookDetail";
 import Skeletons from "../components/skeletons";
+import ReviewSection from "../components/ReviewSection";
 
 interface Props {}
+
+const fetchBookReviews = async (id: string) => {
+  const { data } = await client.get("/review/list/" + id);
+  return data.reviews;
+};
 
 const SingleBook: FC<Props> = () => {
   const [bookDetails, setBookDetails] = useState<Book>();
@@ -17,6 +23,8 @@ const SingleBook: FC<Props> = () => {
       try {
         const { data } = await client.get("/book/details/" + slug);
         setBookDetails(data.book);
+        const reviews = await fetchBookReviews(data.book.id);
+        console.log(reviews);
       } catch (error) {
         parseError(error);
       } finally {
@@ -35,8 +43,11 @@ const SingleBook: FC<Props> = () => {
     );
 
   return (
-    <div className="p-5 lg:p-0">
+    <div className="p-5 lg:p-0 space-y-6">
       <BookDetail book={bookDetails} />
+
+      {/* Review Section */}
+      <ReviewSection title={`${bookDetails?.title} Reviews`} />
     </div>
   );
 };
