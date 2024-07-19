@@ -19,6 +19,7 @@
     "@tiptap/starter-kit": "^2.4.0",
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
+    "dateformat": "^5.0.3",
     "framer-motion": "^11.2.12",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,6 +32,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/dateformat": "^5.0.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-slick": "^0.23.13",
