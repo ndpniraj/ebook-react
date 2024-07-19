@@ -63,6 +63,12 @@ const RichEditor: FC<Props> = ({
     }
   }, [editor, value, editable]);
 
+  useEffect(() => {
+    return () => {
+      loaded = false;
+    };
+  }, []);
+
   return (
     <div
       className={clsx(isInvalid && "ring-2 ring-red-400 p-2 rounded-medium")}
