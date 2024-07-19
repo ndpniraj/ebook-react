@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import client from "../api/client";
 import { parseError } from "../utils/helper";
 import Skeletons from "./skeletons";
-import BookList from "./skeletons/BookList";
+import BookList, { Book } from "./BookList";
 
 interface Props {
   id?: string;
@@ -10,6 +10,7 @@ interface Props {
 
 const RecommendedSection: FC<Props> = ({ id }) => {
   const [fetching, setFetching] = useState(true);
+  const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -17,7 +18,7 @@ const RecommendedSection: FC<Props> = ({ id }) => {
     const fetchBooks = async () => {
       try {
         const { data } = await client.get("/book/recommended/" + id);
-        console.log(data);
+        setBooks(data);
       } catch (error) {
         parseError(error);
       } finally {
@@ -32,7 +33,11 @@ const RecommendedSection: FC<Props> = ({ id }) => {
 
   if (fetching) return <Skeletons.BookList />;
 
-  return <div></div>;
+  return (
+    <div>
+      <BookList data={books} title="Books related to this book" />
+    </div>
+  );
 };
 
 export default RecommendedSection;
