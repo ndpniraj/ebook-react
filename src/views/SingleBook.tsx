@@ -5,6 +5,7 @@ import { parseError } from "../utils/helper";
 import BookDetail, { Book } from "../components/BookDetail";
 import Skeletons from "../components/skeletons";
 import ReviewSection, { Review } from "../components/ReviewSection";
+import RecommendedSection from "../components/RecommendedSection";
 
 interface Props {}
 
@@ -46,6 +47,8 @@ const SingleBook: FC<Props> = () => {
   return (
     <div className="p-5 lg:p-0 space-y-6">
       <BookDetail book={bookDetails} />
+
+      <RecommendedSection id={bookDetails?.id} />
 
       {/* Review Section */}
       <ReviewSection
