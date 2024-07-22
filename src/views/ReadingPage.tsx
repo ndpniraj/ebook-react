@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import EpubReader from "../components/EpubReader";
+import EpubReader from "../components/reader";
 import client from "../api/client";
 import { useParams } from "react-router-dom";
 import { parseError } from "../utils/helper";
