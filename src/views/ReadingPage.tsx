@@ -34,7 +34,7 @@ const ReadingPage: FC<Props> = () => {
 
   return (
     <div>
-      <EpubReader url={"http://localhost:8989/books/book-test.epub"} />
+      <EpubReader url={url} />
     </div>
   );
 };
