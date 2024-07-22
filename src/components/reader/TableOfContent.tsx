@@ -29,7 +29,7 @@ const TableOfContent: FC<Props> = ({ data, onClick }) => {
           );
 
         return (
-          <Accordion title={label.title}>
+          <Accordion key={label.title} title={label.title}>
             <AccordionItem title={label.title}>
               <div className="space-y-3">
                 {subItems.map((item) => {

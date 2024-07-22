@@ -25,11 +25,33 @@ const getElementSize = (id: string) => {
   return { width, height };
 };
 
+const filterHref = (spineHrefList: string[], href: string) => {
+  const foundItem = spineHrefList.find((spineHref) => {
+    const regex = new RegExp("[^/]+/([^/]+.xhtml)");
+    const list = regex.exec(spineHref);
+    if (list) {
+      if (href.startsWith(list[1])) {
+        return true;
+      }
+    }
+  });
+
+  return foundItem || href;
+};
+
 const loadTableOfContent = async (book: Book) => {
   const [nav, spine] = await Promise.all([
     book.loaded.navigation,
     book.loaded.spine,
   ]);
+
+  let spineHref: string[] = [];
+  if (!Array.isArray(spine)) {
+    const { spineByHref } = spine as { spineByHref: { [key: string]: number } };
+    const entires = Object.entries(spineByHref);
+    entires.sort((a, b) => a[1] - b[1]);
+    spineHref = entires.map(([key]) => key);
+  }
 
   const { toc } = nav;
 
@@ -37,17 +59,17 @@ const loadTableOfContent = async (book: Book) => {
   toc.forEach((item) => {
     if (item.subitems?.length) {
       navLabels.push({
-        label: { title: item.label, href: item.href },
+        label: { title: item.label, href: filterHref(spineHref, item.href) },
         subItems: item.subitems.map(({ href, label }) => {
           return {
-            href,
+            href: filterHref(spineHref, href),
             title: label,
           };
         }),
       });
     } else {
       navLabels.push({
-        label: { title: item.label, href: item.href },
+        label: { title: item.label, href: filterHref(spineHref, item.href) },
         subItems: [],
       });
     }
