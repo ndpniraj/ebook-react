@@ -2,7 +2,7 @@ import { FC, useEffect } from "react";
 import { Book } from "epubjs";
 
 interface Props {
-  url: string;
+  url?: Object;
 }
 
 const container = "epub_container";

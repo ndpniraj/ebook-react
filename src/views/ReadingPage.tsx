@@ -15,7 +15,7 @@ interface BookAPIRes {
 }
 
 const ReadingPage: FC<Props> = () => {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState<Object>();
   const { slug } = useParams();
   useEffect(() => {
     if (!slug) return;
@@ -23,7 +23,9 @@ const ReadingPage: FC<Props> = () => {
     const fetchBookUrl = async () => {
       try {
         const { data } = await client.get<BookAPIRes>(`/book/read/${slug}`);
-        setUrl(data.url);
+        const res = await client.get(data.url, { responseType: "blob" });
+
+        setUrl(res.data);
       } catch (error) {
         parseError(error);
       }
