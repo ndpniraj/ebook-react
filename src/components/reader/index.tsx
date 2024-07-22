@@ -8,6 +8,7 @@ import { IoMenu } from "react-icons/io5";
 import ThemeOptions, { ThemeModes } from "./ThemeOptions";
 import FontOptions from "./FontOptions";
 import { MdOutlineStickyNote2 } from "react-icons/md";
+import { RelocatedEvent } from "./types";
 
 interface Props {
   url: string;
@@ -120,6 +121,19 @@ const EpubReader: FC<Props> = ({ url, title }) => {
   const [settings, setSettings] = useState({
     fontSize: 22,
   });
+  const [page, setPage] = useState({
+    start: 0,
+    end: 0,
+    total: 0,
+  });
+
+  const updatePageCounts = (rendition: Rendition) => {
+    const location = rendition.currentLocation() as unknown as RelocatedEvent;
+    const start = location.start.displayed.page;
+    const end = location.end.displayed.page;
+    const total = location.start.displayed.total;
+    setPage({ start, end, total });
+  };
 
   const handleNavigation = (href: string) => {
     rendition?.display(href);
@@ -142,6 +156,7 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     }
     rendition.themes.fontSize(fontSize + "px");
     setSettings({ ...settings, fontSize });
+    updatePageCounts(rendition);
   };
 
   const toggleToc = () => {
@@ -177,6 +192,9 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     rendition.on("click", () => {
       hideToc();
     });
+
+    rendition.on("displayed", () => updatePageCounts(rendition));
+    rendition.on("locationChanged", () => updatePageCounts(rendition));
 
     loadTableOfContent(book)
       .then(setTableOfContent)
@@ -247,6 +265,17 @@ const EpubReader: FC<Props> = ({ url, title }) => {
         data={tableOfContent}
         onClick={handleNavigation}
       />
+
+      <div className="h-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
+        <div className="flex-1 text-center">
+          <p>Page {`${page.start} - ${page.total}`}</p>
+        </div>
+        {page.start === page.end ? null : (
+          <div className="flex-1 text-center">
+            <p>Page {`${page.end} - ${page.total}`}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
