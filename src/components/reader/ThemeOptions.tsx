@@ -7,8 +7,10 @@ import {
 import { FC } from "react";
 import { HiColorSwatch } from "react-icons/hi";
 
+export type ThemeModes = "light" | "dark";
+
 interface Props {
-  onThemeSelect?(mode: "light" | "dark"): void;
+  onThemeSelect?(mode: ThemeModes): void;
 }
 
 const ThemeOptions: FC<Props> = ({ onThemeSelect }) => {

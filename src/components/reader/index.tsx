@@ -5,7 +5,7 @@ import LoadingIndicator from "./LoadingIndicator";
 import TableOfContent, { BookNavList } from "./TableOfContent";
 import { Button } from "@nextui-org/react";
 import { IoMenu } from "react-icons/io5";
-import ThemeOptions from "./ThemeOptions";
+import ThemeOptions, { ThemeModes } from "./ThemeOptions";
 import FontOptions from "./FontOptions";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 
@@ -16,6 +16,34 @@ interface Props {
 
 const container = "epub_container";
 const wrapper = "epub_wrapper";
+const DARK_THEME = {
+  body: {
+    color: "#f8f8ea !important",
+    background: "#2B2B2B !important",
+  },
+  a: {
+    color: "#f8f8ea !important",
+  },
+};
+const LIGHT_THEME = {
+  body: {
+    color: "#000 !important",
+    background: "#fff !important",
+  },
+  a: {
+    color: "blue !important",
+  },
+};
+
+const selectTheme = (rendition: Rendition, mode: ThemeModes) => {
+  if (mode === "light") {
+    document.documentElement.classList.remove("dark");
+  } else {
+    document.documentElement.classList.add("dark");
+  }
+
+  rendition.themes.select(mode);
+};
 
 const getElementSize = (id: string) => {
   const elm = document.getElementById(id);
@@ -94,6 +122,12 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     rendition?.display(href);
   };
 
+  const handleThemeSelection = (mode: ThemeModes) => {
+    if (!rendition) return;
+
+    selectTheme(rendition, mode);
+  };
+
   const toggleToc = () => {
     setShowToc(!showToc);
   };
@@ -112,6 +146,10 @@ const EpubReader: FC<Props> = ({ url, title }) => {
       height,
     });
     rendition.display();
+
+    // Registering The Theme Options
+    rendition.themes.register("light", LIGHT_THEME);
+    rendition.themes.register("dark", DARK_THEME);
 
     // Let's fire the on click if we click inside the book
     rendition.on("click", () => {
@@ -132,7 +170,7 @@ const EpubReader: FC<Props> = ({ url, title }) => {
   }, [url]);
 
   return (
-    <div className="h-screen flex flex-col group">
+    <div className="h-screen flex flex-col group dark:bg-book-dark dark:text-book-dark">
       <LoadingIndicator visible={loading} />
 
       <div className="flex items-center h-14 shadow-md opacity-0 group-hover:opacity-100 transition">
@@ -143,7 +181,7 @@ const EpubReader: FC<Props> = ({ url, title }) => {
         <div>
           <div className="flex items-center justify-center space-x-3">
             {/* Theme Options */}
-            <ThemeOptions />
+            <ThemeOptions onThemeSelect={handleThemeSelection} />
             {/* Font Options */}
             <FontOptions />
             {/* Display Notes */}
