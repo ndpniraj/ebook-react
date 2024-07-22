@@ -3,9 +3,13 @@ import { Book, Rendition } from "epubjs";
 import Navigator from "./Navigator";
 import LoadingIndicator from "./LoadingIndicator";
 import TableOfContent, { BookNavList } from "./TableOfContent";
+import { Button } from "@nextui-org/react";
+import { IoMenu } from "react-icons/io5";
+import ThemeOptions from "./ThemeOptions";
 
 interface Props {
   url: string;
+  title?: string;
 }
 
 const container = "epub_container";
@@ -78,13 +82,22 @@ const loadTableOfContent = async (book: Book) => {
   return navLabels;
 };
 
-const EpubReader: FC<Props> = ({ url }) => {
+const EpubReader: FC<Props> = ({ url, title }) => {
   const [loading, setLoading] = useState(true);
+  const [showToc, setShowToc] = useState(false);
   const [tableOfContent, setTableOfContent] = useState<BookNavList[]>([]);
   const [rendition, setRendition] = useState<Rendition>();
 
   const handleNavigation = (href: string) => {
     rendition?.display(href);
+  };
+
+  const toggleToc = () => {
+    setShowToc(!showToc);
+  };
+
+  const hideToc = () => {
+    setShowToc(false);
   };
 
   useEffect(() => {
@@ -97,6 +110,11 @@ const EpubReader: FC<Props> = ({ url }) => {
       height,
     });
     rendition.display();
+
+    // Let's fire the on click if we click inside the book
+    rendition.on("click", () => {
+      hideToc();
+    });
 
     loadTableOfContent(book)
       .then(setTableOfContent)
@@ -112,15 +130,33 @@ const EpubReader: FC<Props> = ({ url }) => {
   }, [url]);
 
   return (
-    <div className="h-screen">
+    <div className="h-screen flex flex-col group">
       <LoadingIndicator visible={loading} />
-      <div id={wrapper} className="h-full relative group">
+
+      <div className="flex items-center h-14 shadow-md opacity-0 group-hover:opacity-100 transition">
+        <div className="max-w-3xl md:mx-auto md:pl-0 pl-5">
+          <h1 className="line-clamp-1 font-semibold text-large">{title}</h1>
+        </div>
+
+        <div>
+          {/* Theme Options */}
+          <ThemeOptions />
+          {/* Font Options */}
+          {/* Display Notes */}
+          <Button onClick={toggleToc} variant="light" isIconOnly>
+            <IoMenu size={30} />
+          </Button>
+        </div>
+      </div>
+
+      <div id={wrapper} className="h-full relative">
         <div id={container} />
 
         <Navigator
           side="left"
           onClick={() => {
             rendition?.prev();
+            hideToc();
           }}
           className="opacity-0 group-hover:opacity-100"
         />
@@ -128,12 +164,17 @@ const EpubReader: FC<Props> = ({ url }) => {
           side="right"
           onClick={() => {
             rendition?.next();
+            hideToc();
           }}
           className="opacity-0 group-hover:opacity-100"
         />
       </div>
 
-      <TableOfContent data={tableOfContent} onClick={handleNavigation} />
+      <TableOfContent
+        visible={showToc}
+        data={tableOfContent}
+        onClick={handleNavigation}
+      />
     </div>
   );
 };

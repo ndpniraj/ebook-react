@@ -181,7 +181,7 @@ const BookDetail: FC<Props> = ({ book }) => {
 
         <div className="flex items-center mt-6 space-x-3">
           {alreadyPurchased ? (
-            <Button radius="sm" as={Link} to={`/read/${slug}`}>
+            <Button radius="sm" as={Link} to={`/read/${slug}?title=${title}`}>
               Read Now
             </Button>
           ) : (

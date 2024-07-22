@@ -9,12 +9,16 @@ export type BookNavList = {
 
 interface Props {
   data: BookNavList[];
+  visible?: boolean;
   onClick(href: string): void;
 }
 
-const TableOfContent: FC<Props> = ({ data, onClick }) => {
+const TableOfContent: FC<Props> = ({ visible, data, onClick }) => {
   return (
-    <div className="w-96 bg-white h-screen overflow-y-scroll fixed z-50 top-0 right-0 flex flex-col space-y-3 p-3 shadow-md">
+    <div
+      style={{ right: visible ? "0" : "-100%" }}
+      className="transition-all w-96 bg-white h-screen overflow-y-scroll fixed z-50 top-0 right-0 flex flex-col space-y-3 p-3 shadow-md"
+    >
       {data.map(({ label, subItems }) => {
         if (!subItems.length)
           return (

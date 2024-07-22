@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import EpubReader from "../components/reader";
 import client from "../api/client";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { parseError } from "../utils/helper";
 
 interface Props {}
@@ -17,6 +17,9 @@ interface BookAPIRes {
 const ReadingPage: FC<Props> = () => {
   const [url, setUrl] = useState("");
   const { slug } = useParams();
+  const [searchParam] = useSearchParams();
+  const title = searchParam.get("title");
+
   useEffect(() => {
     if (!slug) return;
 
@@ -34,7 +37,7 @@ const ReadingPage: FC<Props> = () => {
 
   return (
     <div>
-      <EpubReader url={"http://localhost:8989/books/book-test.epub"} />
+      <EpubReader url={url} title={title || ""} />
     </div>
   );
 };
