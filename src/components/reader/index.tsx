@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { Book, Rendition } from "epubjs";
 import Navigator from "./Navigator";
+import LoadingIndicator from "./LoadingIndicator";
 
 interface Props {
   url: string;
@@ -24,6 +25,7 @@ const getElementSize = (id: string) => {
 };
 
 const EpubReader: FC<Props> = ({ url }) => {
+  const [loading, setLoading] = useState(true);
   const [rendition, setRendition] = useState<Rendition>();
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const EpubReader: FC<Props> = ({ url }) => {
     rendition.display();
 
     rendition.on("rendered", () => {
-      console.log("book loaded");
+      setLoading(false);
     });
 
     setRendition(rendition);
@@ -50,6 +52,7 @@ const EpubReader: FC<Props> = ({ url }) => {
 
   return (
     <div className="h-screen">
+      <LoadingIndicator visible={loading} />
       <div id={wrapper} className="h-full relative group">
         <div id={container} />
 
