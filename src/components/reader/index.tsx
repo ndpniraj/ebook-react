@@ -1,5 +1,5 @@
-import { FC, useEffect } from "react";
-import { Book } from "epubjs";
+import { FC, useEffect, useState } from "react";
+import { Book, Rendition } from "epubjs";
 import Navigator from "./Navigator";
 
 interface Props {
@@ -24,7 +24,7 @@ const getElementSize = (id: string) => {
 };
 
 const EpubReader: FC<Props> = ({ url }) => {
-  const handleNavigation = () => {};
+  const [rendition, setRendition] = useState<Rendition>();
 
   useEffect(() => {
     if (!url) return;
@@ -38,8 +38,10 @@ const EpubReader: FC<Props> = ({ url }) => {
     rendition.display();
 
     rendition.on("rendered", () => {
-      rendition.next();
+      console.log("book loaded");
     });
+
+    setRendition(rendition);
 
     return () => {
       if (book) book.destroy();
@@ -53,12 +55,16 @@ const EpubReader: FC<Props> = ({ url }) => {
 
         <Navigator
           side="left"
-          onClick={handleNavigation}
+          onClick={() => {
+            rendition?.prev();
+          }}
           className="opacity-0 group-hover:opacity-100"
         />
         <Navigator
           side="right"
-          onClick={handleNavigation}
+          onClick={() => {
+            rendition?.next();
+          }}
           className="opacity-0 group-hover:opacity-100"
         />
       </div>
