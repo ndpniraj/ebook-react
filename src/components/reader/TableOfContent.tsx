@@ -17,7 +17,7 @@ const TableOfContent: FC<Props> = ({ visible, data, onClick }) => {
   return (
     <div
       style={{ right: visible ? "0" : "-100%" }}
-      className="transition-all w-96 bg-white h-screen overflow-y-scroll fixed z-50 top-0 right-0 flex flex-col space-y-3 p-3 shadow-md"
+      className="dark:bg-book-dark dark:text-book-dark transition-all w-96 bg-white h-screen overflow-y-scroll fixed z-50 top-0 right-0 flex flex-col space-y-3 p-3 shadow-md"
     >
       {data.map(({ label, subItems }) => {
         if (!subItems.length)

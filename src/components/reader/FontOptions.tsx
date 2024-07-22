@@ -5,28 +5,30 @@ import {
   PopoverTrigger,
 } from "@nextui-org/react";
 import { FC } from "react";
-import { HiColorSwatch } from "react-icons/hi";
+import { FaMinus, FaPlus } from "react-icons/fa6";
+import { RiFontSize } from "react-icons/ri";
 
 interface Props {
-  onThemeSelect?(mode: "light" | "dark"): void;
+  onFontDecrease?(): void;
+  onFontIncrease?(): void;
 }
 
-const ThemeOptions: FC<Props> = ({ onThemeSelect }) => {
+const FontOptions: FC<Props> = ({ onFontDecrease, onFontIncrease }) => {
   return (
     <Popover showArrow offset={20}>
       <PopoverTrigger>
         <Button variant="light" isIconOnly>
-          <HiColorSwatch size={30} />
+          <RiFontSize size={30} />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="dark:bg-book-dark dark:text-book-dark">
         <div className="flex items-center justify-center space-x-3 p-3">
-          <button onClick={() => onThemeSelect && onThemeSelect("light")}>
-            Light
+          <button onClick={onFontDecrease}>
+            <FaMinus />
           </button>
-          <button onClick={() => onThemeSelect && onThemeSelect("dark")}>
-            Dark
+          <button onClick={onFontIncrease}>
+            <FaPlus />
           </button>
         </div>
       </PopoverContent>
@@ -34,4 +36,4 @@ const ThemeOptions: FC<Props> = ({ onThemeSelect }) => {
   );
 };
 
-export default ThemeOptions;
+export default FontOptions;

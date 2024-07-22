@@ -6,6 +6,8 @@ import TableOfContent, { BookNavList } from "./TableOfContent";
 import { Button } from "@nextui-org/react";
 import { IoMenu } from "react-icons/io5";
 import ThemeOptions from "./ThemeOptions";
+import FontOptions from "./FontOptions";
+import { MdOutlineStickyNote2 } from "react-icons/md";
 
 interface Props {
   url: string;
@@ -139,13 +141,20 @@ const EpubReader: FC<Props> = ({ url, title }) => {
         </div>
 
         <div>
-          {/* Theme Options */}
-          <ThemeOptions />
-          {/* Font Options */}
-          {/* Display Notes */}
-          <Button onClick={toggleToc} variant="light" isIconOnly>
-            <IoMenu size={30} />
-          </Button>
+          <div className="flex items-center justify-center space-x-3">
+            {/* Theme Options */}
+            <ThemeOptions />
+            {/* Font Options */}
+            <FontOptions />
+            {/* Display Notes */}
+            <Button variant="light" isIconOnly>
+              <MdOutlineStickyNote2 size={30} />
+            </Button>
+
+            <Button onClick={toggleToc} variant="light" isIconOnly>
+              <IoMenu size={30} />
+            </Button>
+          </div>
         </div>
       </div>
 

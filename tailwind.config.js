@@ -9,7 +9,14 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        "book-dark": "#2B2B2B",
+      },
+      colors: {
+        "book-dark": "#f8f8ea",
+      },
+    },
   },
   plugins: [nextui()],
 };
