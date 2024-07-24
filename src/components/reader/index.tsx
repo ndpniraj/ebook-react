@@ -125,6 +125,7 @@ const applyHighlights = async (
   rendition: Rendition,
   highlights: Highlight[]
 ) => {
+  console.log("applying highlight");
   highlights.forEach(({ selection, fill }) => {
     rendition.annotations.highlight(
       selection,
