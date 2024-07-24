@@ -10,10 +10,12 @@ import FontOptions from "./FontOptions";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { LocationChangedEvent, RelocatedEvent } from "./types";
 import HighlightOptions from "./HighlightOptions";
+import { debounce } from "../../utils/helper";
 
 interface Props {
   url: string;
   title?: string;
+  lastLocation?: string;
   highlights: Highlight[];
   onHighlight(data: Highlight): void;
   onLocationChanged(location: string): void;
@@ -145,6 +147,7 @@ const EpubReader: FC<Props> = ({
   url,
   title,
   highlights,
+  lastLocation,
   onHighlight,
   onHighlightClear,
   onLocationChanged,
@@ -226,7 +229,7 @@ const EpubReader: FC<Props> = ({
     // basic book styling
     rendition.themes.fontSize(settings.fontSize + "px");
 
-    rendition.on("displayed", () => {
+    rendition.on("locationChanged", () => {
       applyHighlights(rendition, highlights);
     });
   }, [rendition, highlights]);
@@ -240,28 +243,34 @@ const EpubReader: FC<Props> = ({
       width,
       height,
     });
-    rendition.display();
+    rendition.display(lastLocation);
 
     // Registering The Theme Options
     rendition.themes.register("light", LIGHT_THEME);
     rendition.themes.register("dark", DARK_THEME);
 
+    const debounceSetShowHighlightOption = debounce(
+      setShowHighlightOptions,
+      3000
+    );
+
     // Let's fire the on click if we click inside the book
     rendition.on("click", () => {
       hideToc();
-      setShowHighlightOptions(false);
     });
 
     // Let's listen to the text selection
     rendition.on("selected", (cfi: string) => {
       setShowHighlightOptions(true);
       setSelectedCfi(cfi);
+      debounceSetShowHighlightOption(false);
     });
 
     // Let's listen to the highlight click
     rendition.on("markClicked", (cfi: string) => {
       setShowHighlightOptions(true);
       setSelectedCfi(cfi);
+      debounceSetShowHighlightOption(false);
     });
 
     rendition.on("displayed", () => {
@@ -283,7 +292,7 @@ const EpubReader: FC<Props> = ({
     return () => {
       if (book) book.destroy();
     };
-  }, [url]);
+  }, [url, lastLocation]);
 
   return (
     <div className="h-screen flex flex-col group dark:bg-book-dark dark:text-book-dark">
