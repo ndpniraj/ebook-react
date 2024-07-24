@@ -116,6 +116,8 @@ const loadTableOfContent = async (book: Book) => {
 
 const EpubReader: FC<Props> = ({ url, title }) => {
   const [loading, setLoading] = useState(true);
+  const [showHighlightOption, setShowHighlightOptions] = useState(false);
+  const [selectedCfi, setSelectedCfi] = useState("");
   const [showToc, setShowToc] = useState(false);
   const [tableOfContent, setTableOfContent] = useState<BookNavList[]>([]);
   const [rendition, setRendition] = useState<Rendition>();
@@ -192,6 +194,13 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     // Let's fire the on click if we click inside the book
     rendition.on("click", () => {
       hideToc();
+      setShowHighlightOptions(false);
+    });
+
+    // Let's listen to the text selection
+    rendition.on("selected", (cfi: string) => {
+      setShowHighlightOptions(true);
+      setSelectedCfi(cfi);
     });
 
     rendition.on("displayed", () => updatePageCounts(rendition));
@@ -267,7 +276,7 @@ const EpubReader: FC<Props> = ({ url, title }) => {
         onClick={handleNavigation}
       />
 
-      <HighlightOptions visible />
+      <HighlightOptions visible={showHighlightOption} />
 
       <div className="h-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
         <div className="flex-1 text-center">
