@@ -155,6 +155,7 @@ const EpubReader: FC<Props> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const [showNotes, setShowNotes] = useState(false);
+  const [locationBeforeNoteOpen, setLocationBeforeNoteOpen] = useState("");
   const [showHighlightOption, setShowHighlightOptions] = useState(false);
   const [selectedCfi, setSelectedCfi] = useState("");
   const [showToc, setShowToc] = useState(false);
@@ -162,6 +163,7 @@ const EpubReader: FC<Props> = ({
   const [rendition, setRendition] = useState<Rendition>();
   const [settings, setSettings] = useState({
     fontSize: 22,
+    currentLocation: "",
   });
   const [page, setPage] = useState({
     start: 0,
@@ -226,6 +228,12 @@ const EpubReader: FC<Props> = ({
     setShowToc(false);
   };
 
+  const handleOnNotesClick = (path: string) => {
+    if (!locationBeforeNoteOpen)
+      setLocationBeforeNoteOpen(settings.currentLocation);
+    handleNavigation(path);
+  };
+
   useEffect(() => {
     if (!rendition) return;
     // basic book styling
@@ -233,6 +241,10 @@ const EpubReader: FC<Props> = ({
 
     rendition.on("locationChanged", () => {
       applyHighlights(rendition, highlights);
+    });
+
+    rendition.on("relocated", (evt: RelocatedEvent) => {
+      setSettings({ ...settings, currentLocation: evt.start.cfi });
     });
   }, [rendition, highlights]);
 
@@ -368,12 +380,25 @@ const EpubReader: FC<Props> = ({
         notes={highlights.map(({ selection }) => selection)}
         isOpen={showNotes}
         onClose={() => setShowNotes(false)}
+        onNoteClick={handleOnNotesClick}
       />
 
       <div className="h-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
         <div className="flex-1 text-center">
           <p>Page {`${page.start} - ${page.total}`}</p>
         </div>
+
+        {locationBeforeNoteOpen ? (
+          <button
+            onClick={() => {
+              setLocationBeforeNoteOpen("");
+              handleNavigation(locationBeforeNoteOpen);
+            }}
+          >
+            Go to Previous Location
+          </button>
+        ) : null}
+
         {page.start === page.end ? null : (
           <div className="flex-1 text-center">
             <p>Page {`${page.end} - ${page.total}`}</p>
