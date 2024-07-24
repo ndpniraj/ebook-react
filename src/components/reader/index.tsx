@@ -244,9 +244,9 @@ const EpubReader: FC<Props> = ({
     });
 
     rendition.on("relocated", (evt: RelocatedEvent) => {
-      setSettings({ ...settings, currentLocation: evt.start.cfi });
+      setSettings((old) => ({ ...old, currentLocation: evt.start.cfi }));
     });
-  }, [rendition, highlights]);
+  }, [rendition, highlights, settings.fontSize]);
 
   useEffect(() => {
     if (!url) return;
@@ -312,7 +312,7 @@ const EpubReader: FC<Props> = ({
     return () => {
       if (book) book.destroy();
     };
-  }, [url, lastLocation]);
+  }, [url, lastLocation, onLocationChanged]);
 
   // to handle window resize or resize the book container
   useEffect(() => {

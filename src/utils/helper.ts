@@ -69,7 +69,6 @@ export const debounce = <T extends unknown[]>(
 
     // registers the new timeout (registers the new function to call after the given time)
     timeoutId = setTimeout(() => {
-      console.log(...args);
       func(...args);
     }, time);
   };
