@@ -125,8 +125,8 @@ const applyHighlights = async (
   rendition: Rendition,
   highlights: Highlight[]
 ) => {
-  console.log("applying highlight");
   highlights.forEach(({ selection, fill }) => {
+    rendition.annotations.remove(selection, "highlight");
     rendition.annotations.highlight(
       selection,
       undefined,
@@ -237,7 +237,6 @@ const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
 
     // Let's listen to the text selection
     rendition.on("selected", (cfi: string) => {
-      console.log(cfi);
       setShowHighlightOptions(true);
       setSelectedCfi(cfi);
     });
