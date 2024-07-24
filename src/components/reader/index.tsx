@@ -14,7 +14,14 @@ import HighlightOptions from "./HighlightOptions";
 interface Props {
   url: string;
   title?: string;
+  highlights: Highlight[];
+  onHighlight(data: Highlight): void;
 }
+
+export type Highlight = {
+  selection: string;
+  fill: string;
+};
 
 const container = "epub_container";
 const wrapper = "epub_wrapper";
@@ -114,7 +121,24 @@ const loadTableOfContent = async (book: Book) => {
   return navLabels;
 };
 
-const EpubReader: FC<Props> = ({ url, title }) => {
+const applyHighlights = async (
+  rendition: Rendition,
+  highlights: Highlight[]
+) => {
+  highlights.forEach(({ selection, fill }) => {
+    rendition.annotations.highlight(
+      selection,
+      undefined,
+      undefined,
+      undefined,
+      {
+        fill,
+      }
+    );
+  });
+};
+
+const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
   const [loading, setLoading] = useState(true);
   const [showHighlightOption, setShowHighlightOptions] = useState(false);
   const [selectedCfi, setSelectedCfi] = useState("");
@@ -136,6 +160,15 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     const end = location.end.displayed.page;
     const total = location.start.displayed.total;
     setPage({ start, end, total });
+  };
+
+  const handleHighlightSelection = (fill: string) => {
+    if (!rendition) return;
+
+    const newHighlight = { fill, selection: selectedCfi };
+    applyHighlights(rendition, [newHighlight]);
+    setShowHighlightOptions(false);
+    onHighlight(newHighlight);
   };
 
   const handleNavigation = (href: string) => {
@@ -174,7 +207,11 @@ const EpubReader: FC<Props> = ({ url, title }) => {
     if (!rendition) return;
     // basic book styling
     rendition.themes.fontSize(settings.fontSize + "px");
-  }, [rendition]);
+
+    rendition.on("displayed", () => {
+      applyHighlights(rendition, highlights);
+    });
+  }, [rendition, highlights]);
 
   useEffect(() => {
     if (!url) return;
@@ -199,11 +236,14 @@ const EpubReader: FC<Props> = ({ url, title }) => {
 
     // Let's listen to the text selection
     rendition.on("selected", (cfi: string) => {
+      console.log(cfi);
       setShowHighlightOptions(true);
       setSelectedCfi(cfi);
     });
 
-    rendition.on("displayed", () => updatePageCounts(rendition));
+    rendition.on("displayed", () => {
+      updatePageCounts(rendition);
+    });
     rendition.on("locationChanged", () => updatePageCounts(rendition));
 
     loadTableOfContent(book)
@@ -276,7 +316,10 @@ const EpubReader: FC<Props> = ({ url, title }) => {
         onClick={handleNavigation}
       />
 
-      <HighlightOptions visible={showHighlightOption} />
+      <HighlightOptions
+        visible={showHighlightOption}
+        onSelect={handleHighlightSelection}
+      />
 
       <div className="h-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
         <div className="flex-1 text-center">
