@@ -35,6 +35,21 @@ const ReadingPage: FC<Props> = () => {
     }
   };
 
+  const handleOnHighlightClear = (cfi: string) => {
+    try {
+      const newHighlights = highlights.filter((item) => item.selection !== cfi);
+
+      setHighlights(newHighlights);
+      client.post("/history", {
+        bookId,
+        highlights: [{ selection: cfi, fill: "" }],
+        remove: true,
+      });
+    } catch (error) {
+      parseError(error);
+    }
+  };
+
   useEffect(() => {
     if (!slug) return;
 
@@ -58,6 +73,7 @@ const ReadingPage: FC<Props> = () => {
         title={title || ""}
         highlights={highlights}
         onHighlight={handleOnHighlightSelection}
+        onHighlightClear={handleOnHighlightClear}
       />
     </div>
   );

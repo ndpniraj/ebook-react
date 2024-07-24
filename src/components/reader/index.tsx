@@ -16,6 +16,7 @@ interface Props {
   title?: string;
   highlights: Highlight[];
   onHighlight(data: Highlight): void;
+  onHighlightClear(selection: string): void;
 }
 
 export type Highlight = {
@@ -139,7 +140,13 @@ const applyHighlights = async (
   });
 };
 
-const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
+const EpubReader: FC<Props> = ({
+  url,
+  title,
+  highlights,
+  onHighlight,
+  onHighlightClear,
+}) => {
   const [loading, setLoading] = useState(true);
   const [showHighlightOption, setShowHighlightOptions] = useState(false);
   const [selectedCfi, setSelectedCfi] = useState("");
@@ -161,6 +168,14 @@ const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
     const end = location.end.displayed.page;
     const total = location.start.displayed.total;
     setPage({ start, end, total });
+  };
+
+  const handleOnHighlightClear = () => {
+    if (!rendition) return;
+
+    rendition.annotations.remove(selectedCfi, "highlight");
+    setShowHighlightOptions(false);
+    onHighlightClear(selectedCfi);
   };
 
   const handleHighlightSelection = (fill: string) => {
@@ -237,6 +252,12 @@ const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
 
     // Let's listen to the text selection
     rendition.on("selected", (cfi: string) => {
+      setShowHighlightOptions(true);
+      setSelectedCfi(cfi);
+    });
+
+    // Let's listen to the highlight click
+    rendition.on("markClicked", (cfi: string) => {
       setShowHighlightOptions(true);
       setSelectedCfi(cfi);
     });
@@ -319,6 +340,7 @@ const EpubReader: FC<Props> = ({ url, title, highlights, onHighlight }) => {
       <HighlightOptions
         visible={showHighlightOption}
         onSelect={handleHighlightSelection}
+        onClear={handleOnHighlightClear}
       />
 
       <div className="h-10 flex items-center justify-center opacity-0 group-hover:opacity-100">
