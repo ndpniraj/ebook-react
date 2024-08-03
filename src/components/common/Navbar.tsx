@@ -16,12 +16,15 @@ import useCart from "../../hooks/useCart";
 import { IoMdSearch } from "react-icons/io";
 import { IoMenu } from "react-icons/io5";
 import MobileNav from "../MobileNav";
+import useAuth from "../../hooks/useAuth";
 
 interface Props {}
 
 const Navbar: FC<Props> = () => {
   const [showNav, setShowNav] = useState(false);
   const { totalCount } = useCart();
+  const { profile, signOut } = useAuth();
+  const isAuthor = profile?.role === "author";
 
   const openNav = () => {
     setShowNav(true);
@@ -78,7 +81,13 @@ const Navbar: FC<Props> = () => {
         </NavbarContent>
       </NextUINav>
 
-      <MobileNav visible={showNav} onClose={closeNav} />
+      <MobileNav
+        isAuthor={isAuthor}
+        visible={showNav}
+        onClose={closeNav}
+        cartTotal={totalCount}
+        onLogout={signOut}
+      />
     </>
   );
 };
