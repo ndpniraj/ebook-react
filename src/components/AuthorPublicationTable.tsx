@@ -38,6 +38,9 @@ const AuthorPublicationTable: FC<Props> = ({ authorId, visible }) => {
       const { data } = await client.delete("/book/" + removeRequestId);
       if (data.success) {
         toast.success("The book removed successfully!");
+        setBooks((oldBooks) =>
+          oldBooks.filter((book) => book.id !== removeRequestId)
+        );
       } else {
         toast.error(
           (t) => (
