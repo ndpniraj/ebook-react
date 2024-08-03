@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "http://clownfish-app-8rn5a.ondigitalocean.app",
+  baseURL: "https://clownfish-app-8rn5a.ondigitalocean.app",
 });
 
 client.interceptors.request.use(function (config) {
