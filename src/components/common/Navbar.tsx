@@ -4,7 +4,6 @@ import {
   NavbarContent,
   NavbarItem,
   Badge,
-  Input,
 } from "@nextui-org/react";
 import { FC, useState } from "react";
 import { FaBookReader } from "react-icons/fa";
@@ -13,10 +12,10 @@ import { Link } from "react-router-dom";
 import ProfileOptions from "../profile/ProfileOptions";
 import DarkModeSwitch from "./DarkModeSwitch";
 import useCart from "../../hooks/useCart";
-import { IoMdSearch } from "react-icons/io";
 import { IoMenu } from "react-icons/io5";
 import MobileNav from "../MobileNav";
 import useAuth from "../../hooks/useAuth";
+import SearchForm from "../SearchForm";
 
 interface Props {}
 
@@ -45,16 +44,7 @@ const Navbar: FC<Props> = () => {
         </NavbarBrand>
 
         <NavbarContent className="w-full" justify="center">
-          <Input
-            variant="bordered"
-            placeholder="Search your book..."
-            endContent={
-              <button className="focus:outline-none" type="button">
-                <IoMdSearch size={24} />
-              </button>
-            }
-            className="w-full"
-          />
+          <SearchForm />
         </NavbarContent>
 
         <NavbarContent justify="end">
