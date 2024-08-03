@@ -1,12 +1,14 @@
 import { Spinner } from "@nextui-org/react";
 import { FC } from "react";
 
-interface Props {}
+interface Props {
+  label?: string;
+}
 
-const LoadingSpinner: FC<Props> = () => {
+const LoadingSpinner: FC<Props> = ({ label }) => {
   return (
     <div className="flex items-center justify-center p-10">
-      <Spinner label="Verifying..." color="warning" />
+      <Spinner label={label} color="warning" />
     </div>
   );
 };

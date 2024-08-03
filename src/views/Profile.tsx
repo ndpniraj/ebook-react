@@ -38,15 +38,17 @@ const Profile: FC<Props> = () => {
               </span>
             </p>
 
-            {!isAuthor ? (
-              <Link className="text-xs underline" to="/author-registration">
-                Became an Author
-              </Link>
-            ) : (
-              <Link className="text-xs underline" to="/update-author">
-                Update Author Bio
-              </Link>
-            )}
+            <div className="pl-3">
+              {!isAuthor ? (
+                <Link className="text-xs underline" to="/author-registration">
+                  Became an Author
+                </Link>
+              ) : (
+                <Link className="text-xs underline" to="/update-author">
+                  Update Author Bio
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 

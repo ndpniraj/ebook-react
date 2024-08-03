@@ -3,27 +3,33 @@ import { useSearchParams } from "react-router-dom";
 import client from "../api/client";
 import BookList, { Book } from "../components/BookList";
 import DividerWithTitle from "../components/common/DividerWithTitle";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 interface Props {}
 
 const Search: FC<Props> = () => {
   const [result, setResult] = useState<Book[]>([]);
   const [notFound, setNotFound] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [searchParam] = useSearchParams();
 
   const title = searchParam.get("title");
 
   useEffect(() => {
+    setBusy(true);
     client
       .get<{ results: Book[] }>("/search/books?title=" + title)
       .then(({ data }) => {
         if (!data.results.length) setNotFound(true);
         else setNotFound(false);
         setResult(data.results);
-      });
+      })
+      .finally(() => setBusy(false));
   }, [title]);
 
   const heading = `Search Result For: ${title}`;
+
+  if (busy) return <LoadingSpinner label="Searching..." />;
 
   if (notFound)
     return (

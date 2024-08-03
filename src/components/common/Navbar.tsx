@@ -78,6 +78,7 @@ const Navbar: FC<Props> = () => {
           onClose={closeNav}
           cartTotal={totalCount}
           onLogout={signOut}
+          isLoggedIn={profile ? true : false}
         />
       </div>
     </>
