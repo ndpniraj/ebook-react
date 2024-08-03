@@ -24,6 +24,7 @@ import ReviewForm from "./views/ReviewForm";
 import AuthorPage from "./views/AuthorPage";
 import Library from "./views/Library";
 import ReadingPage from "./views/ReadingPage";
+import Search from "./views/Search";
 
 interface Props {}
 
@@ -36,6 +37,7 @@ const App: FC<Props> = () => {
         <Route path="/verify" element={<Verify />} />
         <Route path="/not-found" element={<NotFound />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/author/:id" element={<AuthorPage />} />
 
         <Route element={<Private />}>
