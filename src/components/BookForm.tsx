@@ -4,6 +4,8 @@ import {
   Button,
   DatePicker,
   Input,
+  Radio,
+  RadioGroup,
 } from "@nextui-org/react";
 import {
   ChangeEventHandler,
@@ -32,6 +34,7 @@ export interface InitialBookToUpdate {
   price: { mrp: string; sale: string };
   publicationName: string;
   publishedAt: string;
+  status: string;
 }
 
 interface Props {
@@ -52,6 +55,7 @@ interface DefaultForm {
   language: string;
   mrp: string;
   sale: string;
+  status: string;
 }
 
 const defaultBookInfo = {
@@ -62,6 +66,7 @@ const defaultBookInfo = {
   mrp: "",
   publicationName: "",
   sale: "",
+  status: "published",
 };
 
 interface BookToSubmit {
@@ -69,6 +74,7 @@ interface BookToSubmit {
   description: string;
   uploadMethod: "aws" | "local";
   language: string;
+  status: string;
   publishedAt?: string;
   slug?: string;
   publicationName: string;
@@ -95,6 +101,9 @@ const commonBookSchema = {
     .min(3, "Description is too short!"),
   uploadMethod: z.enum(["aws", "local"], {
     message: "Upload method is missing!",
+  }),
+  status: z.enum(["published", "unpublished"], {
+    message: "Status is missing!",
   }),
   publishedAt: z.string({ required_error: "Publish date is missing!" }).trim(),
   price: z
@@ -214,6 +223,7 @@ const BookForm: FC<Props> = ({
       const bookToSend: BookToSubmit = {
         title: bookInfo.title,
         description: bookInfo.description,
+        status: bookInfo.status,
         genre: bookInfo.genre,
         language: bookInfo.language,
         publicationName: bookInfo.publicationName,
@@ -310,6 +320,7 @@ const BookForm: FC<Props> = ({
       const bookToSend: BookToSubmit = {
         title: bookInfo.title,
         description: bookInfo.description,
+        status: bookInfo.status,
         genre: bookInfo.genre,
         language: bookInfo.language,
         publicationName: bookInfo.publicationName,
@@ -378,6 +389,7 @@ const BookForm: FC<Props> = ({
         publishedAt,
         price,
         cover,
+        status,
       } = initialState;
 
       if (cover) setCover(cover);
@@ -391,6 +403,7 @@ const BookForm: FC<Props> = ({
         publishedAt,
         mrp: price.mrp,
         sale: price.sale,
+        status,
       });
 
       setIsForUpdate(true);
@@ -554,6 +567,18 @@ const BookForm: FC<Props> = ({
         <div className="p-2">
           <ErrorList errors={errors?.price} />
         </div>
+      </div>
+
+      <div>
+        <RadioGroup
+          label="Select the book status"
+          value={bookInfo.status}
+          onValueChange={(status) => setBookInfo({ ...bookInfo, status })}
+          orientation="horizontal"
+        >
+          <Radio value="published">Published</Radio>
+          <Radio value="unpublished">Un Published</Radio>
+        </RadioGroup>
       </div>
 
       <Button isLoading={busy} type="submit" className="w-full">

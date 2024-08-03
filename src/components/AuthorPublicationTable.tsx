@@ -48,7 +48,7 @@ const AuthorPublicationTable: FC<Props> = ({ authorId, visible }) => {
       <TableBody>
         {books.map((book) => {
           return (
-            <TableRow key="1">
+            <TableRow key={book.id}>
               <TableCell>{book.title}</TableCell>
               <TableCell>{book.status}</TableCell>
               <TableCell>
