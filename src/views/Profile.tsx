@@ -66,7 +66,7 @@ const Profile: FC<Props> = () => {
       </div>
       <hr className="my-10" />
 
-      <AuthorPublicationTable visible={isAuthor} />
+      <AuthorPublicationTable visible={isAuthor} authorId={profile.authorId} />
     </div>
   );
 };
