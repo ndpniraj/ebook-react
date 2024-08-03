@@ -39,7 +39,7 @@ const AuthorPublicationTable: FC<Props> = ({ authorId, visible }) => {
   if (!visible) return null;
 
   return (
-    <Table shadow="none">
+    <Table aria-label="Author book collection table" shadow="none">
       <TableHeader>
         <TableColumn>Title</TableColumn>
         <TableColumn>Status</TableColumn>

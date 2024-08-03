@@ -4,16 +4,16 @@ import toast from "react-hot-toast";
 interface ApiError {
   error?: string;
   message?: string;
-  errors?: { [key: string]: string }[];
+  errors?: Record<string, string[]>;
 }
 
 export const parseError = (error: unknown) => {
   if (error instanceof AxiosError) {
     const data = error.response?.data as ApiError;
-    console.log(error);
+
     if (data.errors) {
       // it means this is an array of objects with error
-      const messages = data.errors.map((err) => Object.values(err)).flat();
+      const messages = Object.values(data.errors).flat();
       return messages.map((msg) => {
         toast(msg, { position: "top-right" });
       });

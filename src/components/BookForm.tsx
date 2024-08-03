@@ -27,6 +27,7 @@ export interface InitialBookToUpdate {
   id: string;
   slug: string;
   title: string;
+  status: string;
   description: string;
   genre: string;
   language: string;
@@ -34,7 +35,6 @@ export interface InitialBookToUpdate {
   price: { mrp: string; sale: string };
   publicationName: string;
   publishedAt: string;
-  status: string;
 }
 
 interface Props {
@@ -71,10 +71,10 @@ const defaultBookInfo = {
 
 interface BookToSubmit {
   title: string;
+  status: string;
   description: string;
   uploadMethod: "aws" | "local";
   language: string;
-  status: string;
   publishedAt?: string;
   slug?: string;
   publicationName: string;
@@ -101,9 +101,6 @@ const commonBookSchema = {
     .min(3, "Description is too short!"),
   uploadMethod: z.enum(["aws", "local"], {
     message: "Upload method is missing!",
-  }),
-  status: z.enum(["published", "unpublished"], {
-    message: "Status is missing!",
   }),
   publishedAt: z.string({ required_error: "Publish date is missing!" }).trim(),
   price: z
@@ -223,12 +220,12 @@ const BookForm: FC<Props> = ({
       const bookToSend: BookToSubmit = {
         title: bookInfo.title,
         description: bookInfo.description,
-        status: bookInfo.status,
         genre: bookInfo.genre,
         language: bookInfo.language,
         publicationName: bookInfo.publicationName,
         uploadMethod: "aws",
         publishedAt: bookInfo.publishedAt,
+        status: bookInfo.status,
         price: {
           mrp: Number(bookInfo.mrp),
           sale: Number(bookInfo.sale),
@@ -320,10 +317,10 @@ const BookForm: FC<Props> = ({
       const bookToSend: BookToSubmit = {
         title: bookInfo.title,
         description: bookInfo.description,
-        status: bookInfo.status,
         genre: bookInfo.genre,
         language: bookInfo.language,
         publicationName: bookInfo.publicationName,
+        status: bookInfo.status,
         uploadMethod: "aws",
         publishedAt: bookInfo.publishedAt,
         slug: initialState?.slug,
@@ -569,17 +566,15 @@ const BookForm: FC<Props> = ({
         </div>
       </div>
 
-      <div>
-        <RadioGroup
-          label="Select the book status"
-          value={bookInfo.status}
-          onValueChange={(status) => setBookInfo({ ...bookInfo, status })}
-          orientation="horizontal"
-        >
-          <Radio value="published">Published</Radio>
-          <Radio value="unpublished">Un Published</Radio>
-        </RadioGroup>
-      </div>
+      <RadioGroup
+        label="Select book status"
+        value={bookInfo.status}
+        onValueChange={(status) => setBookInfo({ ...bookInfo, status })}
+        orientation="horizontal"
+      >
+        <Radio value="published">Published</Radio>
+        <Radio value="unpublished">Un Published</Radio>
+      </RadioGroup>
 
       <Button isLoading={busy} type="submit" className="w-full">
         {submitBtnTitle}
