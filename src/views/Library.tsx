@@ -39,8 +39,15 @@ const Library: FC<Props> = () => {
 
   if (fetching)
     return (
-      <div className="text-center pt-10, animate-pulse">
+      <div className="text-center pt-10 animate-pulse">
         <p>Loading...</p>
+      </div>
+    );
+
+  if (!books.length)
+    return (
+      <div className="text-center pt-10 font-bold text-3xl opacity-60">
+        <p>Oops, your library looks empty!</p>
       </div>
     );
 

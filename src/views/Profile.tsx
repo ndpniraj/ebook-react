@@ -17,18 +17,18 @@ const Profile: FC<Props> = () => {
   const isAuthor = role === "author";
 
   return (
-    <div className="flex-1 flex flex-col items-center">
-      <div className="flex min-w-96">
+    <div className="flex-1 flex flex-col items-center md:px-0 px-3 py-5">
+      <div className="flex items-center md:flex-row flex-col md:min-w-96 min-w-full space-y-4">
         <Avatar
           src={avatar}
-          className="w-20 h-20"
+          className="md:w-20 md:h-20 w-14 h-14"
           radius="sm"
           name={profile?.name}
         />
 
         <div className="flex-1 pl-4">
-          <p className="text-xl font-semibold">{profile.name}</p>
-          <p>{profile.email}</p>
+          <p className="md:text-xl text-base font-semibold">{profile.name}</p>
+          <p className="md:text-base text-sm truncate">{profile.email}</p>
 
           <div className="flex justify-between items-center">
             <p>
@@ -52,7 +52,7 @@ const Profile: FC<Props> = () => {
 
         <Button
           onClick={() => navigate("/update-profile")}
-          className="ml-auto"
+          className="md:ml-auto md:w-auto w-full"
           variant="flat"
           isIconOnly
         >
