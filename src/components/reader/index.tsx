@@ -257,7 +257,9 @@ const EpubReader: FC<Props> = ({
       width,
       height,
     });
-    rendition.display(lastLocation);
+
+    if (lastLocation) rendition.display(lastLocation);
+    else rendition.display();
 
     // Registering The Theme Options
     rendition.themes.register("light", LIGHT_THEME);
