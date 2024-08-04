@@ -14,6 +14,7 @@ import { TbShoppingCartPlus } from "react-icons/tb";
 import useCart from "../hooks/useCart";
 import client from "../api/client";
 import useAuth from "../hooks/useAuth";
+import clsx from "clsx";
 
 export interface Book {
   id: string;
@@ -21,6 +22,7 @@ export interface Book {
   genre: string;
   language: string;
   slug: string;
+  status: "published" | "unpublished";
   description: string;
   publicationName: string;
   fileInfo: {
@@ -88,7 +90,10 @@ const BookDetail: FC<Props> = ({ book }) => {
     fileInfo,
     genre,
     publishedAt,
+    status,
   } = book;
+
+  const notAllowed = status === "unpublished";
 
   return (
     <div className="md:flex">
@@ -179,6 +184,16 @@ const BookDetail: FC<Props> = ({ book }) => {
           </div>
         </div>
 
+        {notAllowed && (
+          <div className="pt-6 font-semibold text-lg">
+            <p>
+              {
+                "This book is not available for sale, sorry we don't know for how long!"
+              }
+            </p>
+          </div>
+        )}
+
         <div className="flex items-center mt-6 space-x-3">
           {alreadyPurchased ? (
             <Button
@@ -195,6 +210,8 @@ const BookDetail: FC<Props> = ({ book }) => {
                 variant="light"
                 isLoading={pending || busy}
                 startContent={<TbShoppingCartPlus />}
+                disabled={notAllowed}
+                className={clsx(notAllowed && "cursor-not-allowed")}
               >
                 Add to Cart
               </Button>
@@ -202,6 +219,8 @@ const BookDetail: FC<Props> = ({ book }) => {
                 onClick={handleBuyNow}
                 isLoading={pending || busy}
                 variant="flat"
+                disabled={notAllowed}
+                className={clsx(notAllowed && "cursor-not-allowed")}
               >
                 Buy Now
               </Button>
