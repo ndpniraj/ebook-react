@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { calculateDiscount, formatPrice, parseError } from "../utils/helper";
 import { Button, Chip, Divider } from "@nextui-org/react";
 import {
@@ -51,6 +51,7 @@ const BookDetail: FC<Props> = ({ book }) => {
   const [busy, setBusy] = useState(false);
   const { updateCart, pending } = useCart();
   const { profile } = useAuth();
+  const navigate = useNavigate();
 
   if (!book) return null;
 
@@ -62,6 +63,7 @@ const BookDetail: FC<Props> = ({ book }) => {
 
   const handleBuyNow = async () => {
     try {
+      if (!profile) return navigate("/sign-up");
       setBusy(true);
       const { data } = await client.post("/checkout/instant", {
         productId: id,
