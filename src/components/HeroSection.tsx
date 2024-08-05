@@ -1,45 +1,18 @@
 import { Button } from "@nextui-org/react";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
+import client from "../api/client";
 
 interface Props {}
-
-const books = [
-  {
-    title: "Murder on the Orient Express",
-    slogan: "Unravel the mystery, ride the Orient Express!",
-    subtitle: "A thrilling journey through intrigue and deception.",
-    cover:
-      "https://ebook-public-data.s3.amazonaws.com/668f9ee73d175a420fa4de9a_Murder%20on%20the%20Orient%20Express.png",
-    slug: "murder-on-the-orient-express-668f9ee73d175a420fa4de9a",
-  },
-  {
-    title: "To Kill a Mockingbird",
-    slogan: "Discover courage in a small town.",
-    subtitle: "A timeless tale of justice and compassion.",
-    cover:
-      "https://ebook-public-data.s3.amazonaws.com/668f9ee73d175a420fa4de9d_To%20Kill%20a%20Mockingbird.png",
-    slug: "to-kill-a-mockingbird-668f9ee73d175a420fa4de9d",
-  },
-  {
-    title: "The Girl with the Dragon Tattoo",
-    slogan: "Uncover secrets with the girl and her tattoo.",
-    subtitle: "A gripping thriller of mystery and revenge.",
-    cover:
-      "https://ebook-public-data.s3.amazonaws.com/668f9ee73d175a420fa4debb_The%20Girl%20with%20the%20Dragon%20Tattoo.png",
-    slug: "the-girl-with-the-dragon-tattoo-668f9ee73d175a420fa4debb",
-  },
-  {
-    title: "The Hunger Games",
-    slogan: "Survive the games, ignite the rebellion.",
-    subtitle: "An epic adventure of survival and resilience.",
-    cover:
-      "https://ebook-public-data.s3.amazonaws.com/668f9ee73d175a420fa4debe_The Hunger Games.png",
-    slug: "the-hunger-games-668f9ee73d175a420fa4debe",
-  },
-];
+interface FeaturedBook {
+  title: string;
+  slogan: string;
+  subtitle: string;
+  cover: string;
+  slug: string;
+}
 
 const settings = {
   dots: true,
@@ -53,6 +26,15 @@ const settings = {
 };
 
 const HeroSection: FC<Props> = () => {
+  const [books, setBooks] = useState<FeaturedBook[]>([]);
+  useEffect(() => {
+    client<{ featuredBooks: FeaturedBook[] }>("/book/featured").then(
+      ({ data }) => {
+        setBooks(data.featuredBooks);
+      }
+    );
+  }, []);
+
   return (
     <div className="md:h-96 rounded-medium p-5 bg-[#faf7f2] dark:bg-[#231e1a]">
       <Slider {...settings}>
