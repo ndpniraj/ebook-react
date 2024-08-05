@@ -343,7 +343,7 @@ const EpubReader: FC<Props> = ({
           <h1 className="line-clamp-1 font-semibold text-large">{title}</h1>
         </div>
 
-        <div>
+        <div className="ml-auto">
           <div className="flex items-center justify-center space-x-3">
             {/* Theme Options */}
             <ThemeOptions onThemeSelect={handleThemeSelection} />
