@@ -29,7 +29,7 @@ const DropdownLink: FC<LinkProps> = ({ title, to }) => {
 };
 
 const ProfileMenu: FC<Props> = ({ profile, signOut }) => {
-  const { email, role, name } = profile;
+  const { email, role, name, avatar } = profile;
 
   return (
     <div className="flex items-center gap-4">
@@ -37,10 +37,10 @@ const ProfileMenu: FC<Props> = ({ profile, signOut }) => {
         <DropdownTrigger>
           <User
             as="button"
-            // avatarProps={{
-            //   isBordered: true,
-            //   src: avatar,
-            // }}
+            avatarProps={{
+              isBordered: true,
+              src: avatar,
+            }}
             className="transition-transform"
             name={name}
           />
