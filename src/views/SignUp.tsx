@@ -41,8 +41,12 @@ const SignUp: FC<Props> = () => {
     return (
       <div className="flex-1 flex flex-col items-center justify-center md:p-0 p-4">
         <RiMailCheckLine size={80} className="animate-bounce" />
-        <p className="text-lg font-semibold text-center">
+        <p className="text-lg text-center">
           Please check your email we just sent you a magic link.
+        </p>
+        <p className="font-semibold">
+          If you are a new user then it may take some time to show up mail
+          inside your inbox. So have patience.
         </p>
       </div>
     );
